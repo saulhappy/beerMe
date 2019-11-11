@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
 
+    fetchBeers()
 
 
 })
@@ -33,5 +34,29 @@ document.addEventListener("DOMContentLoaded", function(){
             
 //         })
         
-       
 // }
+
+
+function fetchBeers(){
+    let beerList = document.getElementById("beer-list")
+    
+    fetch("http://localhost:3000/beers")
+    .then(r => r.json())
+    .then(beers => {
+        beers.forEach(beer => {
+            let card = document.createElement("card")
+            let li = document.createElement("li")
+            let image = document.createElement("img")
+
+            li.innerText = beer.name
+            image.src = beer.image_url
+
+            card.append(li, image)
+            beerList.append(card)
+
+        })
+    })
+}
+
+
+
