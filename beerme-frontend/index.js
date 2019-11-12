@@ -53,6 +53,10 @@ function fetchBeers(){
             let card = document.createElement("card")
             let nameP = document.createElement("p")
             let image = document.createElement("img")
+            let abvP = document.createElement("p")
+            let ibuP = document.createElement("p")
+            let foodPairingP = document.createElement("p")
+            foodPairingP.hidden
     
 
             nameP.innerText = beer.name
@@ -62,7 +66,7 @@ function fetchBeers(){
             image.dataset.id = beer.id
             image.class = "card-image"
 
-            card.append(nameP, image)
+            card.append(nameP, image, abvP, ibuP, foodPairingP)
             beerList.append(card)
             card.addEventListener("click", showBeer)
 
@@ -91,8 +95,7 @@ function showBeer(event){
         taglineLi.innerText = beer.tagline
         let abvLi = document.createElement("li")
         abvLi.innerText = beer.abv
-        // let type = document.createElement("li")
-
+        
         let ibuLi = document.createElement("li")
         ibuLi.innerText = beer.ibu
         let description = document.createElement("li")
