@@ -205,16 +205,16 @@ function showComments(beerId){
                 let commentCard = document.createElement("card")
                 let commentP = document.createElement("p")
                 let commentUser = document.createElement("p")
-                let commentBy = comment.username
+                let commentBy = comment.user.username
 
-       
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
                 commentCard.append(commentP, commentUser)
                 commentCard.dataset.commentId = comment.id
                 commentCard.dataset.beerId = beerId
-
+                
                 commentsDiv.append(commentCard)
+                commentCard.setAttribute("class", "comment-card") 
             }
         })
 
@@ -223,11 +223,28 @@ function showComments(beerId){
 
         commentsDiv.append(commentForm)
 
+        commentForm.addEventListener("submit", createComment)
+
     })
 
 
 }
 
+
+
+
+function createComment(event){
+    event.preventDefault()
+
+    fetch("http://localhost:3000/comments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify()
+    })
+}
 
 
 

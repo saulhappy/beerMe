@@ -28,3 +28,7 @@ card {
 .card-image {
     float: right;
 }
+
+.comment-card {
+    background-color: white;
+}

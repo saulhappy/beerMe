@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
 
     def index
-        comments = Comments.all 
+        comments = Comment.all 
         render json: comments.to_json(comment_serializer)
 
     end
@@ -34,7 +34,7 @@ class CommentsController < ApplicationController
     def comment_serializer
         {
             :only => [:comment_text, :beer_id, :user_id],
-            :include => {:users => {
+            :include => {:user => {
                 :only => [:username]
             }}
         }
