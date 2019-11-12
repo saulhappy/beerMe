@@ -1,8 +1,8 @@
 class CommentsController < ApplicationController
 
     def index
-        comments = Comments.all 
-        render json: beers 
+        comments = Comment.all 
+        render json: comments
     end
 
 
