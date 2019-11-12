@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function(){
-    sessionStorage.clear()
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
     let currentUser = sessionStorage.getItem('userId')
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
 
+    console.log(currentUser)
     logIn()
     fetchBeers()
 
@@ -117,6 +117,7 @@ function showBeer(event){
 }
 
 function logIn() {
+    sessionStorage.clear()
     let userLogin = document.getElementById('user-login')
     userLogin.addEventListener('submit', () => {
         event.preventDefault()
@@ -130,11 +131,11 @@ function logIn() {
             body: JSON.stringify({'username': username })
         })
         .then(r => r.json())
-        .then( json => {
-            if (json.errors) {
-              alert(json.errors.username)
+        .then(input => {
+            if (input.errors) {
+              alert(input.errors.username)
             } else {
-              sessionStorage.setItem('userId', json.user.id)
+              sessionStorage.setItem('userId', input.id)
         }
         })
     })
