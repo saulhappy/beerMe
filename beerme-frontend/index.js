@@ -225,6 +225,11 @@ function showComments(beerId){
 
         commentForm.addEventListener("submit", createComment)
 
+
+
+
+        
+
     })
 
 
@@ -235,6 +240,15 @@ function showComments(beerId){
 
 function createComment(event){
     event.preventDefault()
+    
+    let beerCard = document.querySelector("card")
+  
+    let beerId = beerCard.dataset.id
+
+    let textarea = document.querySelector("textarea")
+    let commentContent = textarea.value
+
+
 
     fetch("http://localhost:3000/comments", {
         method: "POST",
@@ -242,7 +256,11 @@ function createComment(event){
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify()
+        body: JSON.stringify({user_id: 1, beer_id: beerId, comment_text: commentContent})
+    })
+    .then(r => r.json())
+    .then(comment => {
+        console.log(comment)
     })
 }
 
