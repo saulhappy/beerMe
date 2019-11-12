@@ -51,17 +51,18 @@ function fetchBeers(){
     .then(beers => {
         beers.forEach(beer => {
             let card = document.createElement("card")
-            let li = document.createElement("li")
+            let nameP = document.createElement("p")
             let image = document.createElement("img")
     
 
-            li.innerText = beer.name
+            nameP.innerText = beer.name
             image.src = beer.image_url
             image.style.height = "200px"
             image.style.width = "65px"
             image.dataset.id = beer.id
+            image.class = "card-image"
 
-            card.append(li, image)
+            card.append(nameP, image)
             beerList.append(card)
             card.addEventListener("click", showBeer)
 
