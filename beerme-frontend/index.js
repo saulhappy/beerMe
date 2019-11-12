@@ -54,8 +54,11 @@ function fetchBeers(){
             let card = document.createElement("card")
             let nameP = document.createElement("p")
             let image = document.createElement("img")
+            let abvP = document.createElement("p")
+            let ibuP = document.createElement("p")
+            let foodPairingUl = document.createElement("ul")
     
-
+            nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
             image.src = beer.image_url
@@ -63,9 +66,16 @@ function fetchBeers(){
             image.style.width = "65px"
             image.dataset.id = beer.id
             image.class = "card-image"
+            abvP.innerText = `ABV: ${beer.abv}`
+            ibuP.innerText = `IBU: ${beer.ibu}`
+            foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
+
+
 
             card.dataset.id = beer.id
-            card.append(nameP, image)
+
+            card.append(nameP, image, abvP, ibuP, foodPairingUl)
+
             beerList.append(card)
             card.addEventListener("click", showBeer)
 
@@ -92,15 +102,18 @@ function showBeer(event){
         
         let showBeerDiv = document.getElementById("single-beer")
         let beerCard = document.createElement("card")
+
         beerCard.id = selectedBeer
-        let NameLi = document.createElement("li")
+      
+        let NameLi = document.createElement("p")
+
         NameLi.innerText = beer.name
         let taglineLi = document.createElement("li")
         taglineLi.innerText = beer.tagline
         let abvLi = document.createElement("li")
         abvLi.innerText = beer.abv
-      
 
+      
         let ibuLi = document.createElement("li")
         ibuLi.innerText = beer.ibu
         let description = document.createElement("li")
@@ -123,7 +136,22 @@ function showBeer(event){
     })
 }
 
+// search for beers
+const searchBar = document.getElementById("search-beers").querySelector('input');
+searchBar.addEventListener('keyup', function(e){
+    const term = e.target.value.toLowerCase();
+    const beerList = document.getElementsByClassName("beer-list-beerName")
+    Array.from(beerList).forEach(function(beer){
+        const beerName = beer.innerText
+        if (beerName.toLowerCase().indexOf(term) != -1){
+            beer.parentElement.style.display = 'block';
+        } else {
+            beer.parentElement.style.display = 'none';
+        }
 
+    })
+    
+})
 
 
 
