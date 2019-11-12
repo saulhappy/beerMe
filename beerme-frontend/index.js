@@ -1,15 +1,17 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
-
+    let currentUser = sessionStorage.getItem('userId')
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     
 
+    console.log(currentUser)
+    logIn()
     fetchBeers()
 
 
-
+    
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
@@ -136,6 +138,33 @@ function showBeer(event){
     })
 }
 
+
+function logIn() {
+    sessionStorage.clear()
+    let userLogin = document.getElementById('user-login')
+    userLogin.addEventListener('submit', () => {
+        event.preventDefault()
+        let username = document.getElementById('username').value
+        fetch("http://localhost:3000/users", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Origin': "*"
+            },
+            body: JSON.stringify({'username': username })
+        })
+        .then(r => r.json())
+        .then(input => {
+            if (input.errors) {
+              alert(input.errors.username)
+            } else {
+              sessionStorage.setItem('userId', input.id)
+        }
+        })
+    })
+    }
+
+  
 // search for beers
 const searchBar = document.getElementById("search-beers").querySelector('input');
 searchBar.addEventListener('keyup', function(e){
@@ -206,6 +235,3 @@ function showComments(beerId){
 
 
 })
-
-
-
