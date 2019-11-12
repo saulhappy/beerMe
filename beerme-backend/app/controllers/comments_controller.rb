@@ -3,6 +3,7 @@ class CommentsController < ApplicationController
     def index
         comments = Comments.all 
         render json: comments.to_json(comment_serializer)
+
     end
 
 
