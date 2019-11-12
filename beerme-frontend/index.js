@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let currentUser = sessionStorage.getItem('userId')
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
+    
 
     console.log(currentUser)
     logIn()
@@ -43,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
-    showBeerContainer.style.visibility = "hidden";
-    browseBeersContainer.style.visibility = "visible";
+    showBeerContainer.style.display = "none";
+    browseBeersContainer.style.display = "block";
     let beerList = document.getElementById("beer-list")
 
     
@@ -55,16 +56,28 @@ function fetchBeers(){
             let card = document.createElement("card")
             let nameP = document.createElement("p")
             let image = document.createElement("img")
+            let abvP = document.createElement("p")
+            let ibuP = document.createElement("p")
+            let foodPairingUl = document.createElement("ul")
     
-
+            nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
+            nameP.dataset.id = beer.id
             image.src = beer.image_url
             image.style.height = "200px"
             image.style.width = "65px"
             image.dataset.id = beer.id
             image.class = "card-image"
+            abvP.innerText = `ABV: ${beer.abv}`
+            ibuP.innerText = `IBU: ${beer.ibu}`
+            foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
 
-            card.append(nameP, image)
+
+
+            card.dataset.id = beer.id
+
+            card.append(nameP, image, abvP, ibuP, foodPairingUl)
+
             beerList.append(card)
             card.addEventListener("click", showBeer)
 
@@ -78,23 +91,31 @@ function fetchBeers(){
 
 function showBeer(event){
     let selectedBeer = event.target.dataset.id
-    browseBeersContainer.style.visibility = "hidden";
-    showBeerContainer.style.visibility = "visible";
+    let beerId = event.target.dataset.id
+   
+    browseBeersContainer.style.display = "none";
+    showBeerContainer.style.display = "block";
 
 
     fetch(`http://localhost:3000/beers/${selectedBeer}`)
-    .then(r => r.json)
+    .then(r => r.json())
     .then(beer => {
+    
+        
         let showBeerDiv = document.getElementById("single-beer")
         let beerCard = document.createElement("card")
-        let NameLi = document.createElement("li")
+
+        beerCard.id = selectedBeer
+      
+        let NameLi = document.createElement("p")
+
         NameLi.innerText = beer.name
         let taglineLi = document.createElement("li")
         taglineLi.innerText = beer.tagline
         let abvLi = document.createElement("li")
         abvLi.innerText = beer.abv
-        // let type = document.createElement("li")
 
+      
         let ibuLi = document.createElement("li")
         ibuLi.innerText = beer.ibu
         let description = document.createElement("li")
@@ -111,10 +132,12 @@ function showBeer(event){
 
         showBeerDiv.append(beerCard)
 
-
+     
+        showComments(beerId)
 
     })
 }
+
 
 function logIn() {
     sessionStorage.clear()
@@ -140,4 +163,75 @@ function logIn() {
         })
     })
     }
+
+  
+// search for beers
+const searchBar = document.getElementById("search-beers").querySelector('input');
+searchBar.addEventListener('keyup', function(e){
+    const term = e.target.value.toLowerCase();
+    const beerList = document.getElementsByClassName("beer-list-beerName")
+    Array.from(beerList).forEach(function(beer){
+        const beerName = beer.innerText
+        if (beerName.toLowerCase().indexOf(term) != -1){
+            beer.parentElement.style.display = 'block';
+        } else {
+            beer.parentElement.style.display = 'none';
+        }
+
+    })
+    
+})
+
+
+
+
+
+
+function showComments(beerId){
+    let commentsDiv = document.getElementById("comments-div")
+    let commentForm = document.createElement("form")
+    let commentBox = document.createElement("textarea")
+    let commentButton = document.createElement("button")
+    
+   
+    
+    
+    fetch(`http://localhost:3000/comments`)
+    .then(r => r.json())
+    .then(comments => {
+        comments.forEach(comment => {
+ 
+            if (comment.beer_id == beerId){
+                let commentCard = document.createElement("card")
+                let commentP = document.createElement("p")
+                let commentUser = document.createElement("p")
+                let commentBy = comment.username
+
+       
+                commentUser.innerText = commentBy
+                commentP.innerText = comment.comment_text
+                commentCard.append(commentP, commentUser)
+                commentCard.dataset.commentId = comment.id
+                commentCard.dataset.beerId = beerId
+
+                commentsDiv.append(commentCard)
+            }
+        })
+
+        commentButton.innerText = "Submit"
+        commentForm.append(commentBox, commentButton)
+
+        commentsDiv.append(commentForm)
+
+    })
+
+
+}
+
+
+
+
+
+
+
 })
