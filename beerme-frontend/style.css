@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #303032;
+    background-color: #747481;
 }
 
 
@@ -18,14 +18,14 @@ body {
 
 card {
     
-    background-color: red;
+    background-color: rgba(0, 195, 255, 0.3);
     text-align: left;
     font-family: Arial;
     font-size: medium;
     
 }
 
-.card-image {
+card img {
     float: right;
 }
 
