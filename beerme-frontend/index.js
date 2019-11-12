@@ -54,7 +54,7 @@ function fetchBeers(){
             let li = document.createElement("li")
             let image = document.createElement("img")
     
-
+            li.setAttribute("class", "beer-list-beerName")
             li.innerText = beer.name
             image.src = beer.image_url
             image.style.height = "200px"
@@ -84,7 +84,7 @@ function showBeer(event){
     .then(beer => {
         let showBeerDiv = document.getElementById("single-beer")
         let beerCard = document.createElement("card")
-        let NameLi = document.createElement("li")
+        let NameLi = document.createElement("p")
         NameLi.innerText = beer.name
         let taglineLi = document.createElement("li")
         taglineLi.innerText = beer.tagline
@@ -113,7 +113,22 @@ function showBeer(event){
     })
 }
 
+// search for beers
+const searchBar = document.getElementById("search-beers").querySelector('input');
+searchBar.addEventListener('keyup', function(e){
+    const term = e.target.value.toLowerCase();
+    const beerList = document.getElementsByClassName("beer-list-beerName")
+    Array.from(beerList).forEach(function(beer){
+        const beerName = beer.innerText
+        if (beerName.toLowerCase().indexOf(term) != -1){
+            beer.parentElement.style.display = 'block';
+        } else {
+            beer.parentElement.style.display = 'none';
+        }
 
+    })
+    
+})
 
 
 
