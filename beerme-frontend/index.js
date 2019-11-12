@@ -67,6 +67,7 @@ function fetchBeers(){
             abvP.innerText = `ABV: ${beer.abv}`
             ibuP.innerText = `IBU: ${beer.ibu}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
+            foodPairingUl.setAttribute("class", "beer-pairings")
 
 
 
@@ -121,11 +122,14 @@ function showBeer(event){
     })
 }
 
-// search for beers
-const searchBar = document.getElementById("search-beers").querySelector('input');
-searchBar.addEventListener('keyup', function(e){
+
+
+// search for beers by name
+const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
+beerNameSearch.addEventListener('keyup', function(e){
     const term = e.target.value.toLowerCase();
     const beerList = document.getElementsByClassName("beer-list-beerName")
+    
     Array.from(beerList).forEach(function(beer){
         const beerName = beer.innerText
         if (beerName.toLowerCase().indexOf(term) != -1){
@@ -133,18 +137,26 @@ searchBar.addEventListener('keyup', function(e){
         } else {
             beer.parentElement.style.display = 'none';
         }
-
+        
+        })    
     })
+
+// search by food pairings
+const beerPairingSearch = document.getElementById("search-beer-pairings").querySelector('input');
+beerPairingSearch.addEventListener('keyup', function(e){
+    const term = e.target.value.toLowerCase();
+    const beerPairings = document.getElementsByClassName("beer-pairings")
     
-})
-
-
-
-
-
-
-
-
+    Array.from(beerPairings).forEach(function(pairing){
+        const beerPairing = pairing.innerText
+        if (beerPairing.toLowerCase().indexOf(term) != -1){
+            pairing.parentElement.style.display = 'block';
+        } else {
+            pairing.parentElement.style.display = 'none';
+        }
+        
+        })    
+    })
 
 
 
