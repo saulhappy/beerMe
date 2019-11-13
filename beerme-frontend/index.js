@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
-    let currentUser = sessionStorage.getItem('userId')
+    localStorage.clear()
+    // let currentUser = parseInt(localStorage.getItem('userId'))
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     
 
-    console.log(currentUser)
+    createAccount()
     logIn()
     fetchBeers()
 
@@ -140,9 +141,32 @@ function showBeer(event){
 
 
 function logIn() {
-    sessionStorage.clear()
     let userLogin = document.getElementById('user-login')
     userLogin.addEventListener('submit', () => {
+        event.preventDefault()
+        let username = document.getElementById('return-user').value
+        fetch("http://localhost:3000/users", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Origin': "*"
+            },
+            body: JSON.stringify({'username': username })
+        })
+        .then(r => r.json())
+        .then(input => {
+            if (input.errors) {
+              alert(input.errors.username)
+            } else {
+              localStorage.getItem('userId', input.id)
+        }
+        })
+    })
+}
+
+function createAccount() {
+    let accountCreate = document.getElementById('user-create')
+    accountCreate.addEventListener('submit', () => {
         event.preventDefault()
         let username = document.getElementById('username').value
         fetch("http://localhost:3000/users", {
@@ -158,11 +182,12 @@ function logIn() {
             if (input.errors) {
               alert(input.errors.username)
             } else {
-              sessionStorage.setItem('userId', input.id)
+              localStorage.setItem('userId', input.id)
         }
         })
     })
-    }
+}
+
 
   
 // search for beers
