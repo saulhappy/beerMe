@@ -198,9 +198,9 @@ function createAccount() {
               alert(input.errors.username)
             } else {
               localStorage.setItem('userId', input.id)
-              localStorage.setItem('userName', input.username)
+            //   localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
-              userId.setAttribute("value", parseInt(localStorage.userId))
+              userId.setAttribute("value", localStorage.userId)
         }
         })
     })
@@ -320,12 +320,12 @@ function showComments(selectedBeer){
                 deleteButton.dataset.id = comment.id
       
                 deleteButton.addEventListener("click", deleteComment)
-                editButton.addEventListener("click", editComment)
+                // editButton.addEventListener("click", editComment)
                 
                 
 
                 
-                let commentBy = localStorage.userName
+                let commentBy = comment.user.username
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
                 commentCard.append(commentP, commentUser, editButton, deleteButton)
@@ -423,7 +423,7 @@ function createComment(event){
         // username not found
         
        
-        let commentBy = localStorage.userName
+        let commentBy = comment.user.username
 
 
         commentUser.innerText = commentBy

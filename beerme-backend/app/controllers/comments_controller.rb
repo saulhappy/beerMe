@@ -28,7 +28,7 @@ class CommentsController < ApplicationController
     private
     
     def comment_params
-        params.permit(:id, :comment_text, :beer_id, :user_id)
+        params.permit(:id, :comment_text, :beer_id, :user_id, {:user => []})
     end
 
     def comment_serializer
