@@ -27,7 +27,7 @@ class UserBeersController < ApplicationController
     private
     
     def user_beer_params
-        params.require(:user_beer).permit(:user_id, :beer_id )
+        params.require(:user_beer).permit(:user_id, :beer_id)
     end
 
 
