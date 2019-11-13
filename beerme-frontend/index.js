@@ -1,14 +1,17 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
-
+    let currentUser = sessionStorage.getItem('userId')
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
+    
 
+    
+    logIn()
     fetchBeers()
 
 
-
+    
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
@@ -41,8 +44,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
-    showBeerContainer.style.visibility = "hidden";
-    browseBeersContainer.style.visibility = "visible";
+    showBeerContainer.style.display = "none";
+    browseBeersContainer.style.display = "block";
     let beerList = document.getElementById("beer-list")
 
     
@@ -60,6 +63,7 @@ function fetchBeers(){
     
             nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
+            nameP.dataset.id = beer.id
             image.src = beer.image_url
             image.style.height = "200px"
             image.style.width = "65px"
@@ -67,16 +71,25 @@ function fetchBeers(){
             image.class = "card-image"
             abvP.setAttribute("class", "abv-value")
             abvP.innerText = `ABV: ${beer.abv}`
+
             ibuP.setAttribute("class", "ibu-value")
             ibuP.innerText = `IBU: ${beer.ibu}`
             ebcP.setAttribute("class", "ebc-value")
             ebcP.innerText = `EBC: ${beer.ebc}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
             foodPairingUl.setAttribute("class", "beer-pairings")
+          
+            abvP.dataset.id = beer.id
+            ibuP.dataset.id = beer.id
+            foodPairingUl.dataset.id = beer.id
 
+
+
+            card.dataset.id = beer.id
 
 
             card.append(nameP, image, abvP, ibuP, ebcP, foodPairingUl)
+
             beerList.append(card)
             card.addEventListener("click", showBeer)
 
@@ -89,23 +102,34 @@ function fetchBeers(){
 
 
 function showBeer(event){
+ 
     let selectedBeer = event.target.dataset.id
-    browseBeersContainer.style.visibility = "hidden";
-    showBeerContainer.style.visibility = "visible";
+  
+    let commentButton = document.querySelector("button")
+
+    browseBeersContainer.style.display = "none";
+    showBeerContainer.style.display = "block";
 
 
     fetch(`http://localhost:3000/beers/${selectedBeer}`)
-    .then(r => r.json)
+    .then(r => r.json())
     .then(beer => {
+    
+        
         let showBeerDiv = document.getElementById("single-beer")
         let beerCard = document.createElement("card")
+
+        beerCard.id = selectedBeer
+      
         let NameLi = document.createElement("p")
+
         NameLi.innerText = beer.name
         let taglineLi = document.createElement("li")
         taglineLi.innerText = beer.tagline
         let abvLi = document.createElement("li")
         abvLi.innerText = beer.abv
-        
+
+      
         let ibuLi = document.createElement("li")
         ibuLi.innerText = beer.ibu
         let description = document.createElement("li")
@@ -122,14 +146,45 @@ function showBeer(event){
 
         showBeerDiv.append(beerCard)
 
-
+      
+        showComments(selectedBeer)
 
     })
 }
 
-// search for beers by name
+
+function logIn() {
+    sessionStorage.clear()
+    let userLogin = document.getElementById('user-login')
+    userLogin.addEventListener('submit', () => {
+        event.preventDefault()
+        let username = document.getElementById('username').value
+        fetch("http://localhost:3000/users", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Origin': "*"
+            },
+            body: JSON.stringify({'username': username })
+        })
+        .then(r => r.json())
+        .then(input => {
+            if (input.errors) {
+              alert(input.errors.username)
+            } else {
+              sessionStorage.setItem('userId', input.id)
+              let userId = document.getElementById("hidden_user_id")
+              userId.setAttribute("value", currentUser)
+        }
+        })
+    })
+    }
+
+  
+// search for beers
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
 beerNameSearch.addEventListener('keyup', function(e){
+
     const term = e.target.value.toLowerCase();
     const beerList = document.getElementsByClassName("beer-list-beerName")
     
@@ -190,6 +245,7 @@ let ibuSlider = document.getElementById("ibu-slider");
 let ibuOutput = document.getElementById("ibu-content");
 ibuOutput.innerHTML = ibuSlider.value; 
 
+
 ibuSlider.oninput = function() {
     ibuOutput.innerHTML = this.value;
     ibuSliderInput = parseInt(this.value)
@@ -207,10 +263,63 @@ ibuSlider.oninput = function() {
     })  
 }
 
+  
+function showComments(selectedBeer){
+    let commentsDiv = document.getElementById("comments-div")
+    let commentBoxDiv = document.getElementById("comment-box")
+    let commentForm = document.getElementById("comment-form")
+    let commentBox = document.createElement("textarea")
+    let commentButton = document.createElement("button")
+    
+   
+    
+    
+    fetch(`http://localhost:3000/comments`)
+    .then(r => r.json())
+    .then(comments => {
+        comments.forEach(comment => {
+ 
+            if (comment.beer_id == selectedBeer){
+               
+                let commentCard = document.createElement("card")
+                let commentP = document.createElement("p")
+                let commentUser = document.createElement("p")
+                let commentBy = comment.user.username
+
+                commentUser.innerText = commentBy
+                commentP.innerText = comment.comment_text
+                commentCard.append(commentP, commentUser)
+                
+                
+                commentsDiv.append(commentCard)
+                commentCard.setAttribute("class", "comment-card") 
+            }
+        })
+  
+        debugger
+        let beerId = document.getElementById("hidden_beer_id")
+        beerId.setAttribute("value", selectedBeer)
+        let userId = document.getElementById("hidden_user_id")
+        userId.setAttribute("value", currentUser)
+     
+
+       
+        commentButton.innerText = "Submit"
+        commentForm.append(commentBox, commentButton)
+
+        commentBoxDiv.append(commentForm)
+
+        commentForm.addEventListener("submit", createComment)
+     
+
+    })
+
+
 // ebc slider filter
 let ebcSlider = document.getElementById("ebc-slider");
 let ebcOutput = document.getElementById("ebc-content");
 ebcOutput.innerHTML = ebcSlider.value; 
+
 
 ebcSlider.oninput = function() {
     ebcOutput.innerHTML = this.value;
@@ -219,6 +328,9 @@ ebcSlider.oninput = function() {
     
     Array.from(ebcVal).forEach(function(ebc){
         const beerebc = parseInt(ebc.innerText.match(numberPattern)[0])        
+
+}
+
 
         if (beerebc > ebcSliderInput){
             ebc.parentElement.style.display = 'block';
@@ -234,4 +346,53 @@ document.addEventListener("click", function(){
     document.getElementById("search-beer-name").reset()
     document.getElementById("search-beer-pairings").reset()
 })
+
+
+
+function createComment(event){
+    event.preventDefault()
+
+ 
+    let beerId = document.getElementById("hidden_beer_id").value
+    let userId = document.getElementById("hidden_user_id").value
+    debugger
+    let textarea = document.querySelector("textarea")
+    let commentContent = textarea.value
+
+ 
+    fetch("http://localhost:3000/comments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({user_id: userId, beer_id: beerId, comment_text: commentContent})
+    })
+    .then(r => r.json())
+    .then(comment => {
+    
+        let commentsDiv = document.getElementById("comments-div")
+        let commentCard = document.createElement("card")
+        let commentP = document.createElement("p")
+        let commentUser = document.createElement("p")
+        // username not found
+        
+       
+        let commentBy = currentUser
+
+
+        commentUser.innerText = commentBy
+        commentP.innerText = comment.comment_text
+        commentCard.append(commentP, commentUser)
+        commentCard.dataset.commentId = comment.user_id
+        commentCard.dataset.beerId = comment.beer_id
+                
+        commentsDiv.append(commentCard)
+        commentCard.setAttribute("class", "comment-card") 
+    })
+
+}
+
+
+
 })

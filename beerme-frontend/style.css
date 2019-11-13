@@ -5,7 +5,9 @@
 }
 
 body {
-    background-color: rgb(255, 255, 255);
+
+    background-color: #747481;
+
 }
 
 
@@ -18,14 +20,15 @@ body {
 
 .card {
     
-    background-color: white;
+
+    background-color: rgba(0, 195, 255, 0.3);
     text-align: left;
     font-family: Arial;
     font-size: medium;
     
 }
 
-.card-image {
+card img {
     float: right;
 }
 
@@ -44,4 +47,9 @@ body {
   .slider:hover {
     opacity: 1; /* Fully shown on mouse-over */
   }
+
+
+.comment-card {
+    background-color: white;
+}
 

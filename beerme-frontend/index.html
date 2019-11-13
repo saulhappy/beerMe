@@ -11,6 +11,16 @@
 </head>
 <body>
 
+    <form id='user-login' accept-charset="utf-8">
+        <h3>Create Your Account</h3>
+        <input type="text" name="username" class="input" id="username" placeholder="Enter Your Name" autocomplete="off"/>
+        <input type="submit" name="submit" class="button" id="submit" value="Submit" /><br><br>
+        <h3>Log Back In</h3>
+        <input type="text" name="username" class="input" id="return-user" placeholder="Returning User" autocomplete="off"/>
+        <input type="submit" name="login" class="button" id="submit" value="Login" />
+    </form>
+
+
     <container id="browse-beers-container" class="browse-beers">
         <form id = "search-beer-name">
             <input type = "text" placeholder="Search beer names...">  
@@ -37,6 +47,18 @@
         <div id="single-beer">
 
             </div>
+
+            <div id="comments-div">
+                <h3>Comments</h3>
+            </div>
+            <div id="comment-box">
+                <form id="comment-form">
+                    <input type="hidden" id="hidden_beer_id" />
+                    <input type="hidden" id="hidden_user_id" />
+
+                    </form>
+            </div>
+            
         </container>
 
 
