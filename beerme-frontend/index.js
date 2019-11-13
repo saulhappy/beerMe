@@ -1,13 +1,17 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
-    let currentUser = sessionStorage.getItem('userId')
+    let currentUser = 107
+    //parseInt(sessionStorage.getItem('userId'))
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     
-
+    //107 for user j
     
+
+
     logIn()
+    console.log(currentUser)
     fetchBeers()
 
 
@@ -60,7 +64,8 @@ function fetchBeers(){
             let ibuP = document.createElement("p")
             let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
-    
+            
+            ebcP.dataset.id = beer.id
             nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
@@ -284,19 +289,37 @@ function showComments(selectedBeer){
                 let commentCard = document.createElement("card")
                 let commentP = document.createElement("p")
                 let commentUser = document.createElement("p")
-                let commentBy = comment.user.username
+                let deleteButton = document.createElement("button")
+                let editButton = document.createElement("button")
+                deleteButton.innerText = "Delete"
+                deleteButton.style.display = "none"
+                editButton.innerText = "Edit"
+                editButton.style.display = "none"
+                deleteButton.dataset.id = comment.id
+                debugger
+                deleteButton.addEventListener("click", deleteComment)
+                // editButton.addEventListener("click", editComment)
+                
+                
 
+                
+                let commentBy = comment.user.username
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
-                commentCard.append(commentP, commentUser)
-                
+                commentCard.append(commentP, commentUser, editButton, deleteButton)
+
+                debugger
+                if (comment.user_id == currentUser){
+                    deleteButton.style.display = "block"
+                    editButton.style.display = "block"
+                }
                 
                 commentsDiv.append(commentCard)
                 commentCard.setAttribute("class", "comment-card") 
             }
         })
   
-        debugger
+    
         let beerId = document.getElementById("hidden_beer_id")
         beerId.setAttribute("value", selectedBeer)
         let userId = document.getElementById("hidden_user_id")
@@ -354,8 +377,8 @@ function createComment(event){
 
  
     let beerId = document.getElementById("hidden_beer_id").value
-    let userId = document.getElementById("hidden_user_id").value
-    debugger
+    // let userId = document.getElementById("hidden_user_id").value
+    
     let textarea = document.querySelector("textarea")
     let commentContent = textarea.value
 
@@ -366,7 +389,7 @@ function createComment(event){
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({user_id: userId, beer_id: beerId, comment_text: commentContent})
+        body: JSON.stringify({user_id: currentUser, beer_id: beerId, comment_text: commentContent})
     })
     .then(r => r.json())
     .then(comment => {
@@ -378,7 +401,7 @@ function createComment(event){
         // username not found
         
        
-        let commentBy = currentUser
+        let commentBy = comment.user
 
 
         commentUser.innerText = commentBy
@@ -393,7 +416,29 @@ function createComment(event){
 
 }
 
+}
 
+
+function deleteComment(event){
+    let commentToDel = event.target.dataset.id
+  
+    fetch(`http://localhost:3000/comments/${commentToDel}`, {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id: commentToDel})
+    })
+    .then(r => r.json())
+    .then(comment => {
+        
+    })
 
 }
+
+
+
+
+
+
+
+
 })
