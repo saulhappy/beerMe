@@ -200,7 +200,7 @@ function createAccount() {
               localStorage.setItem('userId', input.id)
               localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
-              userId.setAttribute("value", parseInt(localStorage.userId))
+              userId.setAttribute("value", localStorage.userId)
         }
         })
     })
@@ -313,11 +313,24 @@ function showComments(selectedBeer){
                 let commentUser = document.createElement("p")
                 let deleteButton = document.createElement("button")
                 let editButton = document.createElement("button")
+                let editForm = document.createElement("form")
+                let saveButton = document.createElement("button")
+                let editBox = document.createElement("textarea")
+
+                editForm.append(editBox, saveButton)
+                editForm.style.display = "none"
+
+                editBox.id = "edit-box"
+                saveButton.dataset.id = comment.id
+                saveButton.innerText = "Save"
+                editForm.dataset.id = comment.id
                 deleteButton.innerText = "Delete"
                 deleteButton.style.display = "none"
                 editButton.innerText = "Edit"
                 editButton.style.display = "none"
                 deleteButton.dataset.id = comment.id
+                editButton.dataset.id = comment.id
+                commentCard.dataset.id = comment.id
       
                 deleteButton.addEventListener("click", deleteComment)
                 editButton.addEventListener("click", editComment)
@@ -399,7 +412,7 @@ function createComment(event){
 
  
     let beerId = document.getElementById("hidden_beer_id").value
-    // let userId = document.getElementById("hidden_user_id").value
+    let userId = document.getElementById("hidden_user_id").value
     
     let textarea = document.querySelector("textarea")
     let commentContent = textarea.value
@@ -422,8 +435,10 @@ function createComment(event){
         let commentUser = document.createElement("p")
         // username not found
         
+
        
         let commentBy = localStorage.userName
+
 
 
         commentUser.innerText = commentBy
@@ -456,6 +471,22 @@ function deleteComment(event){
 
 }
 
+
+
+function editComment(event){
+    event.preventDefault;
+    
+    debugger
+    let commentToEdit = event.dataset.id
+    commentToEdit = parseInt(commentToEdit)
+
+    fetch(`http://localhost:3000/${commentToEdit}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id: commentToEdit, comment_text: newText})
+    })
+
+}
 
 
 
