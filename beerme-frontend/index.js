@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
-    let currentUser = 107
+    let currentUser = 106
     //parseInt(sessionStorage.getItem('userId'))
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
@@ -296,9 +296,9 @@ function showComments(selectedBeer){
                 editButton.innerText = "Edit"
                 editButton.style.display = "none"
                 deleteButton.dataset.id = comment.id
-                debugger
+      
                 deleteButton.addEventListener("click", deleteComment)
-                // editButton.addEventListener("click", editComment)
+                editButton.addEventListener("click", editComment)
                 
                 
 
@@ -308,7 +308,7 @@ function showComments(selectedBeer){
                 commentP.innerText = comment.comment_text
                 commentCard.append(commentP, commentUser, editButton, deleteButton)
 
-                debugger
+             
                 if (comment.user_id == currentUser){
                     deleteButton.style.display = "block"
                     editButton.style.display = "block"
