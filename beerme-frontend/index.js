@@ -55,6 +55,7 @@ function fetchBeers(){
             let image = document.createElement("img")
             let abvP = document.createElement("p")
             let ibuP = document.createElement("p")
+            let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
     
             nameP.setAttribute("class", "beer-list-beerName")
@@ -66,12 +67,13 @@ function fetchBeers(){
             image.class = "card-image"
             abvP.innerText = `ABV: ${beer.abv}`
             ibuP.innerText = `IBU: ${beer.ibu}`
+            ebcP.innerText = `EBC: ${beer.ebc}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
             foodPairingUl.setAttribute("class", "beer-pairings")
 
 
 
-            card.append(nameP, image, abvP, ibuP, foodPairingUl)
+            card.append(nameP, image, abvP, ibuP, ebcP, foodPairingUl)
             beerList.append(card)
             card.addEventListener("click", showBeer)
 
@@ -122,8 +124,6 @@ function showBeer(event){
     })
 }
 
-
-
 // search for beers by name
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
 beerNameSearch.addEventListener('keyup', function(e){
@@ -157,6 +157,51 @@ beerPairingSearch.addEventListener('keyup', function(e){
         
         })    
     })
+
+
+// create slider filters
+let abvSlider = document.getElementById("abv-slider");
+let abvOutput = document.getElementById("abv-content");
+abvOutput.innerHTML = abvSlider.value; // Display the default slider value
+
+
+
+// Update the current slider value (each time you drag the slider handle)
+abvSlider.oninput = function() {
+    abvOutput.innerHTML = this.value;
+}
+
+let ibuSlider = document.getElementById("ibu-slider");
+let ibuOutput = document.getElementById("ibu-content");
+ibuOutput.innerHTML = ibuSlider.value; 
+
+
+ibuSlider.oninput = function() {
+    ibuOutput.innerHTML = this.value;
+}
+
+// create slider filters
+let ebcSlider = document.getElementById("ebc-slider");
+let ebcOutput = document.getElementById("ebc-content");
+ebcOutput.innerHTML = ebcSlider.value; // Display the default slider value
+
+
+
+// Update the current slider value (each time you drag the slider handle)
+ebcSlider.oninput = function() {
+    ebcOutput.innerHTML = this.value;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
