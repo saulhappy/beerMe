@@ -338,7 +338,7 @@ function showComments(selectedBeer){
                 
 
                 
-                let commentBy = localStorage.userName
+                let commentBy = comment.user.username
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
                 commentCard.append(commentP, commentUser, editButton, deleteButton)
