@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
 
     def index
-        comments = Comments.all 
+        comments = Comment.all 
         render json: comments.to_json(comment_serializer)
 
     end
@@ -28,13 +28,13 @@ class CommentsController < ApplicationController
     private
     
     def comment_params
-        params.require(:comment).permit(:comment_text, :beer_id, :user_id)
+        params.permit(:id, :comment_text, :beer_id, :user_id)
     end
 
     def comment_serializer
         {
-            :only => [:comment_text, :beer_id, :user_id],
-            :include => {:users => {
+            :only => [:id, :comment_text, :beer_id, :user_id],
+            :include => {:user => {
                 :only => [:username]
             }}
         }

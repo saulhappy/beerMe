@@ -2,10 +2,8 @@ document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
     localStorage.clear()
-    // let currentUser = parseInt(localStorage.getItem('userId'))
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
-    
 
     createAccount()
     logIn()
@@ -59,8 +57,10 @@ function fetchBeers(){
             let image = document.createElement("img")
             let abvP = document.createElement("p")
             let ibuP = document.createElement("p")
+            let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
-    
+            
+            ebcP.dataset.id = beer.id
             nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
@@ -69,15 +69,26 @@ function fetchBeers(){
             image.style.width = "65px"
             image.dataset.id = beer.id
             image.class = "card-image"
+            abvP.setAttribute("class", "abv-value")
             abvP.innerText = `ABV: ${beer.abv}`
+
+            ibuP.setAttribute("class", "ibu-value")
             ibuP.innerText = `IBU: ${beer.ibu}`
+            ebcP.setAttribute("class", "ebc-value")
+            ebcP.innerText = `EBC: ${beer.ebc}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
+            foodPairingUl.setAttribute("class", "beer-pairings")
+          
+            abvP.dataset.id = beer.id
+            ibuP.dataset.id = beer.id
+            foodPairingUl.dataset.id = beer.id
 
 
 
             card.dataset.id = beer.id
 
-            card.append(nameP, image, abvP, ibuP, foodPairingUl)
+
+            card.append(nameP, image, abvP, ibuP, ebcP, foodPairingUl)
 
             beerList.append(card)
             card.addEventListener("click", showBeer)
@@ -91,9 +102,11 @@ function fetchBeers(){
 
 
 function showBeer(event){
+ 
     let selectedBeer = event.target.dataset.id
-    let beerId = event.target.dataset.id
-   
+  
+    let commentButton = document.querySelector("button")
+
     browseBeersContainer.style.display = "none";
     showBeerContainer.style.display = "block";
 
@@ -133,8 +146,8 @@ function showBeer(event){
 
         showBeerDiv.append(beerCard)
 
-     
-        showComments(beerId)
+      
+        showComments(selectedBeer)
 
     })
 }
@@ -183,6 +196,8 @@ function createAccount() {
               alert(input.errors.username)
             } else {
               localStorage.setItem('userId', input.id)
+              let userId = document.getElementById("hidden_user_id")
+              userId.setAttribute("value", parseInt(localStorage.userId))
         }
         })
     })
@@ -191,10 +206,12 @@ function createAccount() {
 
   
 // search for beers
-const searchBar = document.getElementById("search-beers").querySelector('input');
-searchBar.addEventListener('keyup', function(e){
+const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
+beerNameSearch.addEventListener('keyup', function(e){
+
     const term = e.target.value.toLowerCase();
     const beerList = document.getElementsByClassName("beer-list-beerName")
+    
     Array.from(beerList).forEach(function(beer){
         const beerName = beer.innerText
         if (beerName.toLowerCase().indexOf(term) != -1){
@@ -202,19 +219,79 @@ searchBar.addEventListener('keyup', function(e){
         } else {
             beer.parentElement.style.display = 'none';
         }
-
+        
+        })    
     })
+
+// search by food pairings
+const beerPairingSearch = document.getElementById("search-beer-pairings").querySelector('input');
+beerPairingSearch.addEventListener('keyup', function(e){
+    const term = e.target.value.toLowerCase();
+    const beerPairings = document.getElementsByClassName("beer-pairings")
     
-})
+    Array.from(beerPairings).forEach(function(pairing){
+        const beerPairing = pairing.innerText
+        if (beerPairing.toLowerCase().indexOf(term) != -1){
+            pairing.parentElement.style.display = 'block';
+        } else {
+            pairing.parentElement.style.display = 'none';
+        }
+        
+        })    
+    })
+
+let numberPattern = /\d+/g;
+
+// abv slider filter
+let abvSlider = document.getElementById("abv-slider");
+let abvOutput = document.getElementById("abv-content");
+abvOutput.innerHTML = abvSlider.value; // Display the default slider value
+
+abvSlider.oninput = function() {
+    abvOutput.innerHTML = this.value;
+    abvSliderInput = parseInt(this.value)
+    const abvVal = document.getElementsByClassName("abv-value")
+    
+    Array.from(abvVal).forEach(function(abv){
+        const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
+        
+        if (beerABV > abvSliderInput){
+            abv.parentElement.style.display = 'block';
+        } else {
+            abv.parentElement.style.display = 'none';
+        }
+        
+    })     
+}
+
+// ibu slider filter
+let ibuSlider = document.getElementById("ibu-slider");
+let ibuOutput = document.getElementById("ibu-content");
+ibuOutput.innerHTML = ibuSlider.value; 
 
 
+ibuSlider.oninput = function() {
+    ibuOutput.innerHTML = this.value;
+    ibuSliderInput = parseInt(this.value)
+    const ibuVal = document.getElementsByClassName("ibu-value")
+    
+    Array.from(ibuVal).forEach(function(ibu){
+        const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
 
+        if (beerIBU > ibuSliderInput){
+            ibu.parentElement.style.display = 'block';
+        } else {
+            ibu.parentElement.style.display = 'none';
+        }
+        
+    })  
+}
 
-
-
-function showComments(beerId){
+  
+function showComments(selectedBeer){
     let commentsDiv = document.getElementById("comments-div")
-    let commentForm = document.createElement("form")
+    let commentBoxDiv = document.getElementById("comment-box")
+    let commentForm = document.getElementById("comment-form")
     let commentBox = document.createElement("textarea")
     let commentButton = document.createElement("button")
     
@@ -226,32 +303,156 @@ function showComments(beerId){
     .then(comments => {
         comments.forEach(comment => {
  
-            if (comment.beer_id == beerId){
+            if (comment.beer_id == selectedBeer){
+               
                 let commentCard = document.createElement("card")
                 let commentP = document.createElement("p")
                 let commentUser = document.createElement("p")
-                let commentBy = comment.username
+                let deleteButton = document.createElement("button")
+                let editButton = document.createElement("button")
+                deleteButton.innerText = "Delete"
+                deleteButton.style.display = "none"
+                editButton.innerText = "Edit"
+                editButton.style.display = "none"
+                deleteButton.dataset.id = comment.id
+                debugger
+                deleteButton.addEventListener("click", deleteComment)
+                // editButton.addEventListener("click", editComment)
+                
+                
 
-       
+                
+                let commentBy = comment.user.username
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
-                commentCard.append(commentP, commentUser)
-                commentCard.dataset.commentId = comment.id
-                commentCard.dataset.beerId = beerId
+                commentCard.append(commentP, commentUser, editButton, deleteButton)
 
+                debugger
+                if (comment.user_id == currentUser){
+                    deleteButton.style.display = "block"
+                    editButton.style.display = "block"
+                }
+                
                 commentsDiv.append(commentCard)
+                commentCard.setAttribute("class", "comment-card") 
             }
         })
+  
+    
+        let beerId = document.getElementById("hidden_beer_id")
+        beerId.setAttribute("value", selectedBeer)
+        let userId = document.getElementById("hidden_user_id")
+        userId.setAttribute("value", currentUser)
+     
 
+       
         commentButton.innerText = "Submit"
         commentForm.append(commentBox, commentButton)
 
-        commentsDiv.append(commentForm)
+        commentBoxDiv.append(commentForm)
+
+        commentForm.addEventListener("submit", createComment)
+     
 
     })
 
 
+// ebc slider filter
+let ebcSlider = document.getElementById("ebc-slider");
+let ebcOutput = document.getElementById("ebc-content");
+ebcOutput.innerHTML = ebcSlider.value; 
+
+
+ebcSlider.oninput = function() {
+    ebcOutput.innerHTML = this.value;
+    ebcSliderInput = parseInt(this.value)
+    const ebcVal = document.getElementsByClassName("ebc-value")
+    
+    Array.from(ebcVal).forEach(function(ebc){
+        const beerebc = parseInt(ebc.innerText.match(numberPattern)[0])        
+
+})
+
+
+        if (beerebc > ebcSliderInput){
+            ebc.parentElement.style.display = 'block';
+        } else {
+            ebc.parentElement.style.display = 'none';
+        }
+        
+
 }
+
+// reset forms
+document.addEventListener("click", function(){
+    document.getElementById("search-beer-name").reset()
+    document.getElementById("search-beer-pairings").reset()
+})
+
+
+
+function createComment(event){
+    event.preventDefault()
+
+ 
+    let beerId = document.getElementById("hidden_beer_id").value
+    // let userId = document.getElementById("hidden_user_id").value
+    
+    let textarea = document.querySelector("textarea")
+    let commentContent = textarea.value
+
+ 
+    fetch("http://localhost:3000/comments", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({user_id: currentUser, beer_id: beerId, comment_text: commentContent})
+    })
+    .then(r => r.json())
+    .then(comment => {
+    
+        let commentsDiv = document.getElementById("comments-div")
+        let commentCard = document.createElement("card")
+        let commentP = document.createElement("p")
+        let commentUser = document.createElement("p")
+        // username not found
+        
+       
+        let commentBy = comment.user
+
+
+        commentUser.innerText = commentBy
+        commentP.innerText = comment.comment_text
+        commentCard.append(commentP, commentUser)
+        commentCard.dataset.commentId = comment.user_id
+        commentCard.dataset.beerId = comment.beer_id
+                
+        commentsDiv.append(commentCard)
+        commentCard.setAttribute("class", "comment-card") 
+    })
+
+}
+
+}
+
+
+function deleteComment(event){
+    let commentToDel = event.target.dataset.id
+  
+    fetch(`http://localhost:3000/comments/${commentToDel}`, {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id: commentToDel})
+    })
+    .then(r => r.json())
+    .then(comment => {
+        
+    })
+
+}
+
 
 
 
