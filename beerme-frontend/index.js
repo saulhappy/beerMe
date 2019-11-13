@@ -199,7 +199,7 @@ function createAccount() {
             } else {
               localStorage.setItem('userId', input.id)
               let userId = document.getElementById("hidden_user_id")
-              userId.setAttribute("value", parseInt(localStorage.userId))
+              userId.setAttribute("value", localStorage.userId)
         }
         })
     })
@@ -312,11 +312,24 @@ function showComments(selectedBeer){
                 let commentUser = document.createElement("p")
                 let deleteButton = document.createElement("button")
                 let editButton = document.createElement("button")
+                let editForm = document.createElement("form")
+                let saveButton = document.createElement("button")
+                let editBox = document.createElement("textarea")
+
+                editForm.append(editBox, saveButton)
+                editForm.style.display = "none"
+
+                editBox.id = "edit-box"
+                saveButton.dataset.id = comment.id
+                saveButton.innerText = "Save"
+                editForm.dataset.id = comment.id
                 deleteButton.innerText = "Delete"
                 deleteButton.style.display = "none"
                 editButton.innerText = "Edit"
                 editButton.style.display = "none"
                 deleteButton.dataset.id = comment.id
+                editButton.dataset.id = comment.id
+                commentCard.dataset.id = comment.id
       
                 deleteButton.addEventListener("click", deleteComment)
                 editButton.addEventListener("click", editComment)
@@ -330,7 +343,7 @@ function showComments(selectedBeer){
                 commentCard.append(commentP, commentUser, editButton, deleteButton)
 
              
-                if (comment.user_id == currentUser){
+                if (comment.user_id == localStorage.userId){
                     deleteButton.style.display = "block"
                     editButton.style.display = "block"
                 }
@@ -344,7 +357,7 @@ function showComments(selectedBeer){
         let beerId = document.getElementById("hidden_beer_id")
         beerId.setAttribute("value", selectedBeer)
         let userId = document.getElementById("hidden_user_id")
-        userId.setAttribute("value", currentUser)
+        userId.setAttribute("value", localStorage.userId)
      
 
        
@@ -398,7 +411,7 @@ function createComment(event){
 
  
     let beerId = document.getElementById("hidden_beer_id").value
-    // let userId = document.getElementById("hidden_user_id").value
+    let userId = document.getElementById("hidden_user_id").value
     
     let textarea = document.querySelector("textarea")
     let commentContent = textarea.value
@@ -410,7 +423,7 @@ function createComment(event){
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({user_id: currentUser, beer_id: beerId, comment_text: commentContent})
+        body: JSON.stringify({user_id: localStorage.userId, beer_id: beerId, comment_text: commentContent})
     })
     .then(r => r.json())
     .then(comment => {
@@ -421,7 +434,7 @@ function createComment(event){
         let commentUser = document.createElement("p")
         // username not found
         
-       
+
         let commentBy = comment.user
 
 
@@ -455,6 +468,22 @@ function deleteComment(event){
 
 }
 
+
+
+function editComment(event){
+    event.preventDefault;
+    
+    debugger
+    let commentToEdit = event.dataset.id
+    commentToEdit = parseInt(commentToEdit)
+
+    fetch(`http://localhost:3000/${commentToEdit}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id: commentToEdit, comment_text: newText})
+    })
+
+}
 
 
 
