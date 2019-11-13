@@ -65,8 +65,11 @@ function fetchBeers(){
             image.style.width = "65px"
             image.dataset.id = beer.id
             image.class = "card-image"
+            abvP.setAttribute("class", "abv-value")
             abvP.innerText = `ABV: ${beer.abv}`
+            ibuP.setAttribute("class", "ibu-value")
             ibuP.innerText = `IBU: ${beer.ibu}`
+            ebcP.setAttribute("class", "ebc-value")
             ebcP.innerText = `EBC: ${beer.ebc}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
             foodPairingUl.setAttribute("class", "beer-pairings")
@@ -124,6 +127,7 @@ function showBeer(event){
     })
 }
 
+
 // search for beers by name
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
 beerNameSearch.addEventListener('keyup', function(e){
@@ -158,41 +162,55 @@ beerPairingSearch.addEventListener('keyup', function(e){
         })    
     })
 
+let numberPattern = /\d+/g;
 
-// create slider filters
+// abv slider filter
 let abvSlider = document.getElementById("abv-slider");
 let abvOutput = document.getElementById("abv-content");
 abvOutput.innerHTML = abvSlider.value; // Display the default slider value
 
-
-
-// Update the current slider value (each time you drag the slider handle)
 abvSlider.oninput = function() {
     abvOutput.innerHTML = this.value;
+    abvSliderInput = parseInt(this.value)
+    const abvVal = document.getElementsByClassName("abv-value")
+    
+    Array.from(abvVal).forEach(function(abv){
+        const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
+    
+        if (beerABV > abvSliderInput){
+            abv.parentElement.style.display = 'block';
+        } else {
+            abv.parentElement.style.display = 'none';
+        }
+        
+        })  
+
 }
 
+
+// ibu slider filter
 let ibuSlider = document.getElementById("ibu-slider");
 let ibuOutput = document.getElementById("ibu-content");
 ibuOutput.innerHTML = ibuSlider.value; 
-
 
 ibuSlider.oninput = function() {
     ibuOutput.innerHTML = this.value;
 }
 
-// create slider filters
+// ebc slider filter
 let ebcSlider = document.getElementById("ebc-slider");
 let ebcOutput = document.getElementById("ebc-content");
-ebcOutput.innerHTML = ebcSlider.value; // Display the default slider value
+ebcOutput.innerHTML = ebcSlider.value; 
 
-
-
-// Update the current slider value (each time you drag the slider handle)
 ebcSlider.oninput = function() {
     ebcOutput.innerHTML = this.value;
 }
 
-
+// reset forms
+document.addEventListener("click", function(){
+    document.getElementById("search-beer-name").reset()
+    document.getElementById("search-beer-pairings").reset()
+})
 
 
 
@@ -206,6 +224,5 @@ ebcSlider.oninput = function() {
 
 
 })
-
 
 
