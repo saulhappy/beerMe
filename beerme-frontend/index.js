@@ -198,6 +198,7 @@ function createAccount() {
               alert(input.errors.username)
             } else {
               localStorage.setItem('userId', input.id)
+              localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", parseInt(localStorage.userId))
         }
@@ -324,13 +325,13 @@ function showComments(selectedBeer){
                 
 
                 
-                let commentBy = comment.user.username
+                let commentBy = localStorage.userName
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
                 commentCard.append(commentP, commentUser, editButton, deleteButton)
 
              
-                if (comment.user_id == currentUser){
+                if (comment.user_id == localStorage.userId){
                     deleteButton.style.display = "block"
                     editButton.style.display = "block"
                 }
@@ -344,7 +345,7 @@ function showComments(selectedBeer){
         let beerId = document.getElementById("hidden_beer_id")
         beerId.setAttribute("value", selectedBeer)
         let userId = document.getElementById("hidden_user_id")
-        userId.setAttribute("value", currentUser)
+        userId.setAttribute("value", localStorage.userId)
      
 
        
@@ -410,7 +411,7 @@ function createComment(event){
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({user_id: currentUser, beer_id: beerId, comment_text: commentContent})
+        body: JSON.stringify({user_id: localStorage.userId, beer_id: beerId, comment_text: commentContent})
     })
     .then(r => r.json())
     .then(comment => {
@@ -422,7 +423,7 @@ function createComment(event){
         // username not found
         
        
-        let commentBy = comment.user
+        let commentBy = localStorage.userName
 
 
         commentUser.innerText = commentBy
