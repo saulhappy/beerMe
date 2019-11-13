@@ -127,7 +127,6 @@ function showBeer(event){
     })
 }
 
-
 // search for beers by name
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
 beerNameSearch.addEventListener('keyup', function(e){
@@ -176,17 +175,15 @@ abvSlider.oninput = function() {
     
     Array.from(abvVal).forEach(function(abv){
         const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
-    
+        
         if (beerABV > abvSliderInput){
             abv.parentElement.style.display = 'block';
         } else {
             abv.parentElement.style.display = 'none';
         }
         
-        })  
-
+    })     
 }
-
 
 // ibu slider filter
 let ibuSlider = document.getElementById("ibu-slider");
@@ -195,6 +192,19 @@ ibuOutput.innerHTML = ibuSlider.value;
 
 ibuSlider.oninput = function() {
     ibuOutput.innerHTML = this.value;
+    ibuSliderInput = parseInt(this.value)
+    const ibuVal = document.getElementsByClassName("ibu-value")
+    
+    Array.from(ibuVal).forEach(function(ibu){
+        const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
+
+        if (beerIBU > ibuSliderInput){
+            ibu.parentElement.style.display = 'block';
+        } else {
+            ibu.parentElement.style.display = 'none';
+        }
+        
+    })  
 }
 
 // ebc slider filter
@@ -204,6 +214,19 @@ ebcOutput.innerHTML = ebcSlider.value;
 
 ebcSlider.oninput = function() {
     ebcOutput.innerHTML = this.value;
+    ebcSliderInput = parseInt(this.value)
+    const ebcVal = document.getElementsByClassName("ebc-value")
+    
+    Array.from(ebcVal).forEach(function(ebc){
+        const beerebc = parseInt(ebc.innerText.match(numberPattern)[0])        
+
+        if (beerebc > ebcSliderInput){
+            ebc.parentElement.style.display = 'block';
+        } else {
+            ebc.parentElement.style.display = 'none';
+        }
+        
+    })  
 }
 
 // reset forms
@@ -211,18 +234,4 @@ document.addEventListener("click", function(){
     document.getElementById("search-beer-name").reset()
     document.getElementById("search-beer-pairings").reset()
 })
-
-
-
-
-
-
-
-
-
-
-
-
 })
-
-
