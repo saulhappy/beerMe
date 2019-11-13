@@ -198,6 +198,7 @@ function createAccount() {
               alert(input.errors.username)
             } else {
               localStorage.setItem('userId', input.id)
+              localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
         }
@@ -337,7 +338,7 @@ function showComments(selectedBeer){
                 
 
                 
-                let commentBy = comment.user.username
+                let commentBy = localStorage.userName
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
                 commentCard.append(commentP, commentUser, editButton, deleteButton)
@@ -435,7 +436,9 @@ function createComment(event){
         // username not found
         
 
-        let commentBy = comment.user
+       
+        let commentBy = localStorage.userName
+
 
 
         commentUser.innerText = commentBy
