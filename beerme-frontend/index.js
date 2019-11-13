@@ -329,7 +329,7 @@ ebcSlider.oninput = function() {
     Array.from(ebcVal).forEach(function(ebc){
         const beerebc = parseInt(ebc.innerText.match(numberPattern)[0])        
 
-}
+})
 
 
         if (beerebc > ebcSliderInput){
@@ -338,7 +338,7 @@ ebcSlider.oninput = function() {
             ebc.parentElement.style.display = 'none';
         }
         
-    })  
+
 }
 
 // reset forms
@@ -395,4 +395,5 @@ function createComment(event){
 
 
 
+}
 })
