@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let showBeerContainer = document.getElementById("show-beer-container")
     
 
-    console.log(currentUser)
+    
     logIn()
     fetchBeers()
 
@@ -69,8 +69,11 @@ function fetchBeers(){
             image.dataset.id = beer.id
             image.class = "card-image"
             abvP.innerText = `ABV: ${beer.abv}`
+            abvP.dataset.id = beer.id
             ibuP.innerText = `IBU: ${beer.ibu}`
+            ibuP.dataset.id = beer.id
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
+            foodPairingUl.dataset.id = beer.id
 
 
 
@@ -90,9 +93,11 @@ function fetchBeers(){
 
 
 function showBeer(event){
+ 
     let selectedBeer = event.target.dataset.id
-    let beerId = event.target.dataset.id
-   
+  
+    let commentButton = document.querySelector("button")
+
     browseBeersContainer.style.display = "none";
     showBeerContainer.style.display = "block";
 
@@ -132,8 +137,8 @@ function showBeer(event){
 
         showBeerDiv.append(beerCard)
 
-     
-        showComments(beerId)
+      
+        showComments(selectedBeer)
 
     })
 }
@@ -159,6 +164,8 @@ function logIn() {
               alert(input.errors.username)
             } else {
               sessionStorage.setItem('userId', input.id)
+              let userId = document.getElementById("hidden_user_id")
+              userId.setAttribute("value", currentUser)
         }
         })
     })
@@ -187,9 +194,10 @@ searchBar.addEventListener('keyup', function(e){
 
 
 
-function showComments(beerId){
+function showComments(selectedBeer){
     let commentsDiv = document.getElementById("comments-div")
-    let commentForm = document.createElement("form")
+    let commentBoxDiv = document.getElementById("comment-box")
+    let commentForm = document.getElementById("comment-form")
     let commentBox = document.createElement("textarea")
     let commentButton = document.createElement("button")
     
@@ -201,7 +209,8 @@ function showComments(beerId){
     .then(comments => {
         comments.forEach(comment => {
  
-            if (comment.beer_id == beerId){
+            if (comment.beer_id == selectedBeer){
+               
                 let commentCard = document.createElement("card")
                 let commentP = document.createElement("p")
                 let commentUser = document.createElement("p")
@@ -210,25 +219,28 @@ function showComments(beerId){
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
                 commentCard.append(commentP, commentUser)
-                commentCard.dataset.commentId = comment.id
-                commentCard.dataset.beerId = beerId
+                
                 
                 commentsDiv.append(commentCard)
                 commentCard.setAttribute("class", "comment-card") 
             }
         })
+  
+        debugger
+        let beerId = document.getElementById("hidden_beer_id")
+        beerId.setAttribute("value", selectedBeer)
+        let userId = document.getElementById("hidden_user_id")
+        userId.setAttribute("value", currentUser)
+     
 
+       
         commentButton.innerText = "Submit"
         commentForm.append(commentBox, commentButton)
 
-        commentsDiv.append(commentForm)
+        commentBoxDiv.append(commentForm)
 
         commentForm.addEventListener("submit", createComment)
-
-
-
-
-        
+     
 
     })
 
@@ -240,28 +252,46 @@ function showComments(beerId){
 
 function createComment(event){
     event.preventDefault()
-    
-    let beerCard = document.querySelector("card")
-  
-    let beerId = beerCard.dataset.id
 
+ 
+    let beerId = document.getElementById("hidden_beer_id").value
+    let userId = document.getElementById("hidden_user_id").value
+    debugger
     let textarea = document.querySelector("textarea")
     let commentContent = textarea.value
 
-
-
+ 
     fetch("http://localhost:3000/comments", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({user_id: 1, beer_id: beerId, comment_text: commentContent})
+        body: JSON.stringify({user_id: userId, beer_id: beerId, comment_text: commentContent})
     })
     .then(r => r.json())
     .then(comment => {
-        console.log(comment)
+    
+        let commentsDiv = document.getElementById("comments-div")
+        let commentCard = document.createElement("card")
+        let commentP = document.createElement("p")
+        let commentUser = document.createElement("p")
+        // username not found
+        
+       
+        let commentBy = currentUser
+
+
+        commentUser.innerText = commentBy
+        commentP.innerText = comment.comment_text
+        commentCard.append(commentP, commentUser)
+        commentCard.dataset.commentId = comment.user_id
+        commentCard.dataset.beerId = comment.beer_id
+                
+        commentsDiv.append(commentCard)
+        commentCard.setAttribute("class", "comment-card") 
     })
+
 }
 
 
