@@ -58,6 +58,7 @@ function fetchBeers(){
             let image = document.createElement("img")
             let abvP = document.createElement("p")
             let ibuP = document.createElement("p")
+            let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
     
             nameP.setAttribute("class", "beer-list-beerName")
@@ -68,18 +69,26 @@ function fetchBeers(){
             image.style.width = "65px"
             image.dataset.id = beer.id
             image.class = "card-image"
+            abvP.setAttribute("class", "abv-value")
             abvP.innerText = `ABV: ${beer.abv}`
-            abvP.dataset.id = beer.id
+
+            ibuP.setAttribute("class", "ibu-value")
             ibuP.innerText = `IBU: ${beer.ibu}`
-            ibuP.dataset.id = beer.id
+            ebcP.setAttribute("class", "ebc-value")
+            ebcP.innerText = `EBC: ${beer.ebc}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
+            foodPairingUl.setAttribute("class", "beer-pairings")
+          
+            abvP.dataset.id = beer.id
+            ibuP.dataset.id = beer.id
             foodPairingUl.dataset.id = beer.id
 
 
 
             card.dataset.id = beer.id
 
-            card.append(nameP, image, abvP, ibuP, foodPairingUl)
+
+            card.append(nameP, image, abvP, ibuP, ebcP, foodPairingUl)
 
             beerList.append(card)
             card.addEventListener("click", showBeer)
@@ -173,10 +182,12 @@ function logIn() {
 
   
 // search for beers
-const searchBar = document.getElementById("search-beers").querySelector('input');
-searchBar.addEventListener('keyup', function(e){
+const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
+beerNameSearch.addEventListener('keyup', function(e){
+
     const term = e.target.value.toLowerCase();
     const beerList = document.getElementsByClassName("beer-list-beerName")
+    
     Array.from(beerList).forEach(function(beer){
         const beerName = beer.innerText
         if (beerName.toLowerCase().indexOf(term) != -1){
@@ -184,16 +195,75 @@ searchBar.addEventListener('keyup', function(e){
         } else {
             beer.parentElement.style.display = 'none';
         }
-
+        
+        })    
     })
+
+// search by food pairings
+const beerPairingSearch = document.getElementById("search-beer-pairings").querySelector('input');
+beerPairingSearch.addEventListener('keyup', function(e){
+    const term = e.target.value.toLowerCase();
+    const beerPairings = document.getElementsByClassName("beer-pairings")
     
-})
+    Array.from(beerPairings).forEach(function(pairing){
+        const beerPairing = pairing.innerText
+        if (beerPairing.toLowerCase().indexOf(term) != -1){
+            pairing.parentElement.style.display = 'block';
+        } else {
+            pairing.parentElement.style.display = 'none';
+        }
+        
+        })    
+    })
+
+let numberPattern = /\d+/g;
+
+// abv slider filter
+let abvSlider = document.getElementById("abv-slider");
+let abvOutput = document.getElementById("abv-content");
+abvOutput.innerHTML = abvSlider.value; // Display the default slider value
+
+abvSlider.oninput = function() {
+    abvOutput.innerHTML = this.value;
+    abvSliderInput = parseInt(this.value)
+    const abvVal = document.getElementsByClassName("abv-value")
+    
+    Array.from(abvVal).forEach(function(abv){
+        const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
+        
+        if (beerABV > abvSliderInput){
+            abv.parentElement.style.display = 'block';
+        } else {
+            abv.parentElement.style.display = 'none';
+        }
+        
+    })     
+}
+
+// ibu slider filter
+let ibuSlider = document.getElementById("ibu-slider");
+let ibuOutput = document.getElementById("ibu-content");
+ibuOutput.innerHTML = ibuSlider.value; 
 
 
+ibuSlider.oninput = function() {
+    ibuOutput.innerHTML = this.value;
+    ibuSliderInput = parseInt(this.value)
+    const ibuVal = document.getElementsByClassName("ibu-value")
+    
+    Array.from(ibuVal).forEach(function(ibu){
+        const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
 
+        if (beerIBU > ibuSliderInput){
+            ibu.parentElement.style.display = 'block';
+        } else {
+            ibu.parentElement.style.display = 'none';
+        }
+        
+    })  
+}
 
-
-
+  
 function showComments(selectedBeer){
     let commentsDiv = document.getElementById("comments-div")
     let commentBoxDiv = document.getElementById("comment-box")
@@ -245,8 +315,37 @@ function showComments(selectedBeer){
     })
 
 
+// ebc slider filter
+let ebcSlider = document.getElementById("ebc-slider");
+let ebcOutput = document.getElementById("ebc-content");
+ebcOutput.innerHTML = ebcSlider.value; 
+
+
+ebcSlider.oninput = function() {
+    ebcOutput.innerHTML = this.value;
+    ebcSliderInput = parseInt(this.value)
+    const ebcVal = document.getElementsByClassName("ebc-value")
+    
+    Array.from(ebcVal).forEach(function(ebc){
+        const beerebc = parseInt(ebc.innerText.match(numberPattern)[0])        
+
 }
 
+
+        if (beerebc > ebcSliderInput){
+            ebc.parentElement.style.display = 'block';
+        } else {
+            ebc.parentElement.style.display = 'none';
+        }
+        
+    })  
+}
+
+// reset forms
+document.addEventListener("click", function(){
+    document.getElementById("search-beer-name").reset()
+    document.getElementById("search-beer-pairings").reset()
+})
 
 
 
@@ -293,9 +392,6 @@ function createComment(event){
     })
 
 }
-
-
-
 
 
 

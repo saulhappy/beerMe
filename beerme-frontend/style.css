@@ -5,7 +5,9 @@
 }
 
 body {
+
     background-color: #747481;
+
 }
 
 
@@ -16,8 +18,9 @@ body {
     padding: 60px 0;
 }
 
-card {
+.card {
     
+
     background-color: rgba(0, 195, 255, 0.3);
     text-align: left;
     font-family: Arial;
@@ -29,6 +32,24 @@ card img {
     float: right;
 }
 
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 20%; /* Full-width */
+    height: 10px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.9; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+  }
+
+  .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+
+
 .comment-card {
     background-color: white;
 }
+
