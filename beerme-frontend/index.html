@@ -4,12 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+    
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+        $(window).on('scroll', function(){
+            if ($(window).scrollTop()){
+                $('nav').addClass('black');
+            }
+            else {
+                $('nav').removeClass('black');
+            }
+        })
+
+    </script>
+
+
 
     <title>BeerMe</title>
 </head>
 <body>
+
+    <nav>
+        <div class="logo">
+            <img src="logo.png">
+        </div>
+        <ul>
+            <li><a id="favorites-button" href="#" class="active">Favorites</a></li>
+            <li><a id="browse-beers-button" href="#">Browse Beers</a></li>
+            <li><a id="beerme-button" href="#">Beer Me</a></li>
+         </ul>
+        
+    </nav>
+        <section class="sec1"></section>
+        <section class="content"></section>
+        <section class="sec2"></section>
+        <section class="sec3"></section>
+       
+
+
+
+
+
+
 
     <container id="account-container">
 
@@ -47,18 +84,19 @@
     <container id="show-beer-container" class="show-beer">
         <div id="single-beer">
 
-            </div>
+        </div>
 
             <div id="comments-div">
                 <h3>Comments</h3>
             </div>
             <div id="comment-box">
-                <form id="comment-form">
                     <input type="hidden" id="hidden_beer_id" />
                     <input type="hidden" id="hidden_user_id" />
+                <form id="comment-form">
 
-                    </form>
+                </form>
             </div>
+            <button id='go-back'>Go Back</button>
             
         <div id= "fav-button-area">
         </div>
@@ -71,6 +109,7 @@
         </container>
 
 
-    <script src = "index.js"></script>
+    <script src = "index.js">
+    </script>
 </body>
 </html>

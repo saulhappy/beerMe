@@ -6,22 +6,22 @@ document.addEventListener("DOMContentLoaded", function(){
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     let accountContainer = document.getElementById("account-container")
-    
-    
+
+       
     createAccount()
-    
 
 
+    let browseBeers = document.getElementById("browse-beers-button")
     let userFavs = []  // get fav beers
     fetch("http://localhost:3000/user_beers")
-    .then(function(response){
-        return response.json()
-    })
+    .then(r => r.json())
     .then(function(favs){
         for(let i = 0; i < favs.length; i++){
             userFavs.push(favs[i].beer_id)
         }
-        })
+    })
+
+  
  
 
 // function getBeers(){
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
-    accountContainer.style.display = "none";
+    accountContainer.style.display = "show";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "block";
     let beerList = document.getElementById("beer-list")
@@ -118,10 +118,11 @@ function fetchBeers(){
 function showBeer(event){
  
     let selectedBeer = event.target.dataset.id
-  
+    let beerDiv = document.getElementById("single-beer")
     let commentButton = document.querySelector("button")
 
     browseBeersContainer.style.display = "none";
+    beerDiv.innerHTML = ""
     showBeerContainer.style.display = "block";
 
 
@@ -170,11 +171,11 @@ function showBeer(event){
 
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
             beerArea.innerText = "This is one of your favorite beers"
-            let removeFav = document.createElement("button")
-            removeFav.id = "remove-fav-btn"
-            removeFav.innerText = "Remove From Favorites"
-            beerArea.append(removeFav)
-            removeFav.addEventListener("click", destroyFav)
+            // let removeFav = document.createElement("button")
+            // removeFav.id = "remove-fav-btn"
+            // removeFav.innerText = "Remove From Favorites"
+            // beerArea.append(removeFav)
+            // removeFav.addEventListener("click", destroyFav)
             
             
         } else { // create add button functionality
@@ -185,6 +186,7 @@ function showBeer(event){
             beerArea.addEventListener("click", addFav)
         }
     })
+    
     
     function addFav(){
 
@@ -207,26 +209,25 @@ function showBeer(event){
             })
     }
 
-    function destroyFav(){
-        debugger
-        const configObject = {
-            method: "DELETE",
-            headers: {"Content-Type": "application/json",
-            "Accept": "application/json"},
-            body: JSON.stringify({user_id: localStorage.userId, 
-                beer_id: selectedBeer
-            })}
+    // function destroyFav(){
+    //     const configObject = {
+    //         method: "DELETE",
+    //         headers: {"Content-Type": "application/json",
+    //         "Accept": "application/json"},
+    //         body: JSON.stringify({user_id: localStorage.userId, 
+    //             beer_id: selectedBeer
+    //         })}
             
-            fav_url = `http://localhost:3000/user_beers/${ubID}`
+    //         fav_url = `http://localhost:3000/user_beers/${ubID}`
 
-            fetch(fav_url, configObject)
-            .then(function(response){
-                return response.json();
-            }).then(newUserBeer => {
-                document.getElementById("remove-fav-btn").innerText = "Removed!"
-            })
-    }   
-}
+    //         fetch(fav_url, configObject)
+    //         .then(function(response){
+    //             return response.json();
+    //         }).then(newUserBeer => {
+    //             document.getElementById("remove-fav-btn").innerText = "Removed!"
+    //         })
+    // }  
+    } 
 
 // show user
 const userShow = document.getElementById("user-show-link")
@@ -308,7 +309,6 @@ function createAccount() {
     accountContainer.style.display = "block";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "none";
-
     let accountCreate = document.getElementById('user-create')
     accountCreate.addEventListener('submit', () => {
         event.preventDefault()
@@ -330,6 +330,7 @@ function createAccount() {
               localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
+              accountCreate.style.display = 'none'
               fetchBeers()
         }
         })
@@ -337,6 +338,8 @@ function createAccount() {
 }
 
 
+browseBeers.addEventListener("click", fetchBeers)
+  
 // search for beers
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
 beerNameSearch.addEventListener('keyup', function(e){
@@ -431,6 +434,7 @@ function showComments(selectedBeer){
   
     
    
+    commentsDiv.innerHTML = ""
     
     
     fetch(`http://localhost:3000/comments`)
@@ -465,7 +469,7 @@ function showComments(selectedBeer){
                 commentCard.dataset.id = comment.id
       
                 deleteButton.addEventListener("click", deleteComment)
-                editButton.addEventListener("click", editComment)
+                // editButton.addEventListener("click", editComment)
                 
                 
 
@@ -492,14 +496,13 @@ function showComments(selectedBeer){
         userId.setAttribute("value", localStorage.userId)
      
 
-        commentBox.id = "comment_form_box"
+        commentForm.innerHTML = ""
+
+        commentBox.id = "comment-form-box"
         commentButton.innerText = "Submit"
         commentForm.append(commentBox, commentButton)
-
         commentBoxDiv.append(commentForm)
-
         commentForm.addEventListener("submit", createComment)
-
     })
 
 
@@ -539,17 +542,17 @@ document.addEventListener("click", function(){
 
 function createComment(event){
     event.preventDefault()
-    console.log('I am a new comment')
+    
  
     let beerId = document.getElementById("hidden_beer_id").value
     let userId = document.getElementById("hidden_user_id").value
 
     
-    let textarea = document.getElementById("comment_form_box")
+    let textarea = document.getElementById("comment-form-box")
 
     let commentContent = textarea.value
 
- 
+    
     fetch("http://localhost:3000/comments", {
         method: "POST",
         headers: {
@@ -560,7 +563,6 @@ function createComment(event){
     })
     .then(r => r.json())
     .then(comment => {
-    
         let commentsDiv = document.getElementById("comments-div")
         let commentCard = document.createElement("card")
         let commentP = document.createElement("p")
@@ -574,7 +576,6 @@ function createComment(event){
         
 
        
-
         let commentBy = localStorage.userName
 
 
@@ -666,7 +667,6 @@ function editComment(event){
 
 function editCommentFetch(event){
     event.preventDefault()
-
     let commentToEdit = event.target.dataset.id
     commentToEdit = parseInt(commentToEdit)
     
@@ -692,16 +692,6 @@ function editCommentFetch(event){
     .then(comment => {
         let editForm = commentCard.querySelector("form")
         editForm.style.display = "none"
-    })
-   
-
-}
-
-
-
-
-
-
-
 })
-
+}
+})
