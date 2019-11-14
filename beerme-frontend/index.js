@@ -1,18 +1,22 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
-    // getBeers();
 
+    // getBeers(); 
     localStorage.clear()
-
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     let goBack = document.getElementById("go-back")
+    let userFavs = []
+    fetch("http://localhost:3000/user_beers")
+    .then(r => r.json())
+    .then(function(favs){
+        for(let i = 0; i < favs.length; i++){
+            userFavs.push(favs[i].beer_id)
+        }
+    })
 
     createAccount()
     fetchBeers()
-
-
-    
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
@@ -94,12 +98,12 @@ function fetchBeers(){
 
             beerList.append(card)
             card.addEventListener("click", showBeer)
+            
 
         })
     })
 
 }
-
 
 
 
@@ -152,8 +156,71 @@ function showBeer(event){
       
         showComments(selectedBeer)
 
+
+        // create favorite beers functions
+        selectedBeer = parseInt(selectedBeer)
+        let beerArea = document.getElementById("fav-button-area") 
+
+        if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
+            beerArea.innerText = "This is one of your favorite beers"
+            let removeFav = document.createElement("button")
+            removeFav.id = "remove-fav-btn"
+            removeFav.innerText = "Remove From Favorites"
+            beerArea.append(removeFav)
+            removeFav.addEventListener("click", destroyFav)
+            
+            
+        } else { // create add button functionality
+            let addingFav = document.createElement("button")
+            addingFav.id = "fav-btn"
+            addingFav.innerText = "Add to Favorites"
+            beerArea.append(addingFav)
+            beerArea.addEventListener("click", addFav)
+        }
     })
-}
+    
+    
+    function addFav(){
+
+        const configObject = {
+            method: "POST",
+            headers: {"Content-Type": "application/json",
+            "Accept": "application/json"},
+            body: JSON.stringify({user_id: localStorage.userId, 
+                beer_id: selectedBeer
+            })}
+
+            fav_url = "http://localhost:3000/user_beers"
+
+            fetch(fav_url, configObject)
+            .then(function(response){
+                return response.json();
+            }).then(newUserBeer => {
+                document.getElementById("fav-btn").innerText = "Beer Favorited!"
+                document.getElementById("fav-button-area").dataset.ubid = newUserBeer.id
+            })
+    }
+
+    function destroyFav(){
+        const configObject = {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json",
+            "Accept": "application/json"},
+            body: JSON.stringify({user_id: localStorage.userId, 
+                beer_id: selectedBeer
+            })}
+            
+            fav_url = `http://localhost:3000/user_beers/${ubID}`
+
+            fetch(fav_url, configObject)
+            .then(function(response){
+                return response.json();
+            }).then(newUserBeer => {
+                document.getElementById("remove-fav-btn").innerText = "Removed!"
+            })
+    }  
+    } 
+
 
 function createAccount() {
     let accountCreate = document.getElementById('user-create')
@@ -174,6 +241,7 @@ function createAccount() {
               alert(input.errors.username)
             } else {
               localStorage.setItem('userId', input.id)
+              localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
               accountCreate.style.display = 'none'
@@ -219,6 +287,8 @@ beerPairingSearch.addEventListener('keyup', function(e){
         
         })    
     })
+
+// SLIDER FILTERS
 
 let numberPattern = /\d+/g;
 
@@ -274,6 +344,7 @@ function showComments(selectedBeer){
     let commentForm = document.getElementById("comment-form")
     let commentBox = document.createElement("textarea")
     let commentButton = document.createElement("button")
+  
     
    
     commentsDiv.innerHTML = ""
@@ -291,11 +362,24 @@ function showComments(selectedBeer){
                 let commentUser = document.createElement("p")
                 let deleteButton = document.createElement("button")
                 let editButton = document.createElement("button")
+                let editForm = document.createElement("form")
+                let saveButton = document.createElement("button")
+                let editBox = document.createElement("textarea")
+
+                editForm.append(editBox, saveButton)
+                editForm.style.display = "none"
+
+                editBox.id = "edit-box"
+                saveButton.dataset.id = comment.id
+                saveButton.innerText = "Save"
+                editForm.dataset.id = comment.id
                 deleteButton.innerText = "Delete"
                 deleteButton.style.display = "none"
                 editButton.innerText = "Edit"
                 editButton.style.display = "none"
                 deleteButton.dataset.id = comment.id
+                editButton.dataset.id = comment.id
+                commentCard.dataset.id = comment.id
       
                 deleteButton.addEventListener("click", deleteComment)
                 // editButton.addEventListener("click", editComment)
@@ -306,7 +390,7 @@ function showComments(selectedBeer){
                 let commentBy = comment.user.username
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
-                commentCard.append(commentP, commentUser, editButton, deleteButton)
+                commentCard.append(commentP, commentUser, editButton, deleteButton, editForm)
 
              
                 if (comment.user_id == localStorage.userId){
@@ -319,7 +403,6 @@ function showComments(selectedBeer){
             }
         })
   
-    
         let beerId = document.getElementById("hidden_beer_id")
         beerId.setAttribute("value", selectedBeer)
         let userId = document.getElementById("hidden_user_id")
@@ -328,6 +411,7 @@ function showComments(selectedBeer){
 
         commentForm.innerHTML = ""
 
+        commentBox.id = "comment-form-box"
         commentButton.innerText = "Submit"
         commentForm.append(commentBox, commentButton)
         commentBoxDiv.append(commentForm)
@@ -371,15 +455,17 @@ document.addEventListener("click", function(){
 
 function createComment(event){
     event.preventDefault()
-
+    
  
     let beerId = document.getElementById("hidden_beer_id").value
-    // let userId = document.getElementById("hidden_user_id").value
+    let userId = document.getElementById("hidden_user_id").value
+
     
-    let textarea = document.querySelector("textarea")
+    let textarea = document.getElementById("comment-form-box")
+
     let commentContent = textarea.value
 
- 
+    debugger
     fetch("http://localhost:3000/comments", {
         method: "POST",
         headers: {
@@ -390,34 +476,72 @@ function createComment(event){
     })
     .then(r => r.json())
     .then(comment => {
-    
+    debugger
         let commentsDiv = document.getElementById("comments-div")
         let commentCard = document.createElement("card")
         let commentP = document.createElement("p")
         let commentUser = document.createElement("p")
-        // username not found
+        let deleteButton = document.createElement("button")
+        let editButton = document.createElement("button")
+        let editForm = document.createElement("form")
+        let editBox = document.createElement("textarea")
+        let saveButton = document.createElement("button")
         
+        
+
        
-        let commentBy = comment.user.username
+        let commentBy = localStorage.userName
 
 
+
+
+        editForm.append(editBox, saveButton)
+        editForm.style.display = "none"
+
+        editBox.id = "edit-box"
+        saveButton.dataset.id = comment.id
+        saveButton.innerText = "Save"
+        editForm.dataset.id = comment.id
+        deleteButton.innerText = "Delete"
+        deleteButton.style.display = "none"
+        editButton.innerText = "Edit"
+        editButton.style.display = "none"
+        deleteButton.dataset.id = comment.id
+        editButton.dataset.id = comment.id
+        commentCard.dataset.id = comment.id
+
+
+        
         commentUser.innerText = commentBy
         commentP.innerText = comment.comment_text
+        commentP.setAttribute("class", "commentP")
         commentCard.append(commentP, commentUser)
         commentCard.dataset.commentId = comment.user_id
         commentCard.dataset.beerId = comment.beer_id
-                
+        
+        commentCard.append(editButton, deleteButton, editForm)
         commentsDiv.append(commentCard)
         commentCard.setAttribute("class", "comment-card") 
+        if (comment.user_id == localStorage.userId){
+            deleteButton.style.display = "block"
+            editButton.style.display = "block"
+        }
+      
+        deleteButton.addEventListener("click", deleteComment)
+        editButton.addEventListener("click", editComment)
+        saveButton.addEventListener("click", editCommentFetch)
+        textarea.value = ""
     })
 
-}
+} 
 
 }
 
 
 function deleteComment(event){
     let commentToDel = event.target.dataset.id
+    let commentParent = event.target.parentElement
+
   
     fetch(`http://localhost:3000/comments/${commentToDel}`, {
         method: "DELETE",
@@ -426,15 +550,62 @@ function deleteComment(event){
     })
     .then(r => r.json())
     .then(comment => {
-        
+        commentParent.remove()
     })
 
 }
 
 
 
+function editComment(event){
+    event.preventDefault()
+    console.log("edit comment function")
+    let commentCard = event.target.parentElement
+    let editForm = commentCard.querySelector("form")
+    let oldText = commentCard.querySelector("p")
+    let editBox = editForm.querySelector("textarea")
+    let saveButton = editForm.querySelector("button")
+   
+    
+
+    editBox.value = oldText.innerText
+
+    editForm.style.display = "block"
+    
+    // saveButton.addEventListener("click", editCommentFetch)
+}
 
 
 
 
+
+function editCommentFetch(event){
+    event.preventDefault()
+    let commentToEdit = event.target.dataset.id
+    commentToEdit = parseInt(commentToEdit)
+    
+    let commentForm = event.target.parentElement
+    let newText = commentForm.querySelector("#edit-box").value
+    
+    let commentCard = commentForm.parentElement
+  
+    let commentP = commentCard.getElementsByClassName("commentP")
+    commentP = commentP[0]
+    commentP.innerText = newText
+   
+
+
+
+    fetch(`http://localhost:3000/comments/${commentToEdit}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json",
+                    "Accept": "application/json"},
+        body: JSON.stringify({comment_text: newText})
+    })
+    .then(r => r.json())
+    .then(comment => {
+        let editForm = commentCard.querySelector("form")
+        editForm.style.display = "none"
+})
+}
 })
