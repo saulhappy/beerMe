@@ -17,8 +17,8 @@ class CommentsController < ApplicationController
     end
 
     def update
-        Comment.find(params["id"]).update(comment_params)
-        render json: Comment.find(params["id"])
+        comment = Comment.find(params["id"]).update(comment_params)
+        render json: comment
     end
 
     def destroy
