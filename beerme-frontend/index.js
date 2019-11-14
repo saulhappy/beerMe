@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
-    // getBeers();
-    let currentUser = 1
-
-    // sessionStorage.getItem('beerIDuserId')
+    // getBeers(); 
+    localStorage.clear()
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     
@@ -20,9 +18,6 @@ document.addEventListener("DOMContentLoaded", function(){
     
     logIn()
     fetchBeers()
-
-
-    
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
@@ -106,12 +101,12 @@ function fetchBeers(){
 
             beerList.append(card)
             card.addEventListener("click", showBeer)
+            
 
         })
     })
 
 }
-
 
 
 
@@ -176,6 +171,7 @@ function showBeer(event){
             beerArea.append(removeFav)
             removeFav.addEventListener("click", destroyFav)
             
+            
         } else { // create add button functionality
             let addingFav = document.createElement("button")
             addingFav.id = "fav-btn"
@@ -183,15 +179,15 @@ function showBeer(event){
             beerArea.append(addingFav)
             beerArea.addEventListener("click", addFav)
         }
-        })
-        
+    })
+    
     function addFav(){
 
         const configObject = {
             method: "POST",
             headers: {"Content-Type": "application/json",
             "Accept": "application/json"},
-            body: JSON.stringify({user_id: currentUser, 
+            body: JSON.stringify({user_id: localStorage.userId, 
                 beer_id: selectedBeer
             })}
 
@@ -202,19 +198,20 @@ function showBeer(event){
                 return response.json();
             }).then(newUserBeer => {
                 document.getElementById("fav-btn").innerText = "Beer Favorited!"
-                // ADD THE NEW USERBEER TO THE BUTTON
+                document.getElementById("fav-button-area").dataset.ubid = newUserBeer.id
             })
     }
 
     function destroyFav(){
+        debugger
         const configObject = {
             method: "DELETE",
             headers: {"Content-Type": "application/json",
             "Accept": "application/json"},
-            body: JSON.stringify({user_id: currentUser, 
+            body: JSON.stringify({user_id: localStorage.userId, 
                 beer_id: selectedBeer
             })}
-
+            
             fav_url = `http://localhost:3000/user_beers/${ubID}`
 
             fetch(fav_url, configObject)
@@ -247,15 +244,11 @@ function logIn() {
             } else {
               sessionStorage.setItem('userId', input.id)
               let userId = document.getElementById("hidden_user_id")
-              userId.setAttribute("value", currentUser)
+              userId.setAttribute("value", localStorage.userId)
         }
         })
     })
     }
-
-
-
-
 
 // search for beers
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
@@ -377,7 +370,7 @@ function showComments(selectedBeer){
         let beerId = document.getElementById("hidden_beer_id")
         beerId.setAttribute("value", selectedBeer)
         let userId = document.getElementById("hidden_user_id")
-        userId.setAttribute("value", currentUser)
+        userId.setAttribute("value", localStorage.userId)
      
 
        
@@ -455,7 +448,7 @@ function createComment(event){
         // username not found
         
        
-        let commentBy = currentUser
+        let commentBy = localStorage.userId
 
 
         commentUser.innerText = commentBy
