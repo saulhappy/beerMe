@@ -1,11 +1,22 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
     // getBeers();
-    let currentUser = sessionStorage.getItem('userId')
+    let currentUser = 1
+
+    // sessionStorage.getItem('beerIDuserId')
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     
-
+    let userFavs = []  // get fav beers
+    fetch("http://localhost:3000/user_beers")
+    .then(function(response){
+        return response.json()
+    })
+    .then(function(favs){
+        for(let i = 0; i < favs.length; i++){
+            userFavs.push(favs[i].beer_id)
+        }
+        })
     
     logIn()
     fetchBeers()
@@ -60,6 +71,9 @@ function fetchBeers(){
             let ibuP = document.createElement("p")
             let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
+
+
+
     
             nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
@@ -149,9 +163,68 @@ function showBeer(event){
       
         showComments(selectedBeer)
 
-    })
-}
 
+        // create favorite beers functions
+        selectedBeer = parseInt(selectedBeer)
+        let beerArea = document.getElementById("fav-button-area") 
+
+        if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
+            beerArea.innerText = "This is one of your favorite beers"
+            let removeFav = document.createElement("button")
+            removeFav.id = "remove-fav-btn"
+            removeFav.innerText = "Remove From Favorites"
+            beerArea.append(removeFav)
+            removeFav.addEventListener("click", destroyFav)
+            
+        } else { // create add button functionality
+            let addingFav = document.createElement("button")
+            addingFav.id = "fav-btn"
+            addingFav.innerText = "Add to Favorites"
+            beerArea.append(addingFav)
+            beerArea.addEventListener("click", addFav)
+        }
+        })
+        
+    function addFav(){
+
+        const configObject = {
+            method: "POST",
+            headers: {"Content-Type": "application/json",
+            "Accept": "application/json"},
+            body: JSON.stringify({user_id: currentUser, 
+                beer_id: selectedBeer
+            })}
+
+            fav_url = "http://localhost:3000/user_beers"
+
+            fetch(fav_url, configObject)
+            .then(function(response){
+                return response.json();
+            }).then(newUserBeer => {
+                document.getElementById("fav-btn").innerText = "Beer Favorited!"
+                // ADD THE NEW USERBEER TO THE BUTTON
+            })
+    }
+
+    function destroyFav(){
+        const configObject = {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json",
+            "Accept": "application/json"},
+            body: JSON.stringify({user_id: currentUser, 
+                beer_id: selectedBeer
+            })}
+
+            fav_url = `http://localhost:3000/user_beers/${ubID}`
+
+            fetch(fav_url, configObject)
+            .then(function(response){
+                return response.json();
+            }).then(newUserBeer => {
+                document.getElementById("remove-fav-btn").innerText = "Removed!"
+            })
+    }   
+}
 
 function logIn() {
     sessionStorage.clear()
@@ -180,7 +253,10 @@ function logIn() {
     })
     }
 
-  
+
+
+
+
 // search for beers
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
 beerNameSearch.addEventListener('keyup', function(e){
@@ -215,6 +291,8 @@ beerPairingSearch.addEventListener('keyup', function(e){
         
         })    
     })
+
+// SLIDER FILTERS
 
 let numberPattern = /\d+/g;
 
@@ -296,7 +374,6 @@ function showComments(selectedBeer){
             }
         })
   
-        debugger
         let beerId = document.getElementById("hidden_beer_id")
         beerId.setAttribute("value", selectedBeer)
         let userId = document.getElementById("hidden_user_id")
@@ -355,7 +432,7 @@ function createComment(event){
  
     let beerId = document.getElementById("hidden_beer_id").value
     let userId = document.getElementById("hidden_user_id").value
-    debugger
+
     let textarea = document.querySelector("textarea")
     let commentContent = textarea.value
 

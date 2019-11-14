@@ -1,7 +1,7 @@
 class UserBeersController < ApplicationController
 
     def index
-        user_beers = UserBeers.all 
+        user_beers = UserBeer.all 
         render json: user_beers 
     end
 
