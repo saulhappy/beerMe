@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let showBeerContainer = document.getElementById("show-beer-container")
 
     createAccount()
-    logIn()
+
     fetchBeers()
 
 
