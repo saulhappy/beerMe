@@ -5,8 +5,9 @@ document.addEventListener("DOMContentLoaded", function(){
     localStorage.clear()
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
-    let goBack = document.getElementById("go-back")
     let accountContainer = document.getElementById("account-container")
+
+    let browseBeers = document.getElementById("browse-beers-button")
     let userFavs = []  // get fav beers
     fetch("http://localhost:3000/user_beers")
     .then(r => r.json())
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function(){
     })
 
     createAccount()
-    fetchBeers()
+  
  
 
 // function getBeers(){
@@ -251,13 +252,14 @@ function createAccount() {
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
               accountCreate.style.display = 'none'
+              fetchBeers()
         }
         })
     })
 }
 
 
-goBack.addEventListener("click", fetchBeers)
+browseBeers.addEventListener("click", fetchBeers)
   
 // search for beers
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
