@@ -7,6 +7,13 @@ document.addEventListener("DOMContentLoaded", function(){
     let showBeerContainer = document.getElementById("show-beer-container")
     let goBack = document.getElementById("go-back")
     let userFavs = []
+    let accountContainer = document.getElementById("account-container")
+    
+    createAccount()
+    
+
+
+    let userFavs = []  // get fav beers
     fetch("http://localhost:3000/user_beers")
     .then(r => r.json())
     .then(function(favs){
@@ -17,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     createAccount()
     fetchBeers()
+ 
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
@@ -49,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
+    accountContainer.style.display = "none";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "block";
     let beerList = document.getElementById("beer-list")
@@ -223,6 +232,10 @@ function showBeer(event){
 
 
 function createAccount() {
+    accountContainer.style.display = "block";
+    showBeerContainer.style.display = "none";
+    browseBeersContainer.style.display = "none";
+
     let accountCreate = document.getElementById('user-create')
     accountCreate.addEventListener('submit', () => {
         event.preventDefault()
@@ -245,6 +258,7 @@ function createAccount() {
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
               accountCreate.style.display = 'none'
+              fetchBeers()
         }
         })
     })
