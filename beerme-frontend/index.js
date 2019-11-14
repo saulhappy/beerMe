@@ -6,13 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     let goBack = document.getElementById("go-back")
-    let userFavs = []
     let accountContainer = document.getElementById("account-container")
-    
-    createAccount()
-    
-
-
     let userFavs = []  // get fav beers
     fetch("http://localhost:3000/user_beers")
     .then(r => r.json())
@@ -57,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
-    accountContainer.style.display = "none";
+    accountContainer.style.display = "show";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "block";
     let beerList = document.getElementById("beer-list")
@@ -172,11 +166,11 @@ function showBeer(event){
 
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
             beerArea.innerText = "This is one of your favorite beers"
-            let removeFav = document.createElement("button")
-            removeFav.id = "remove-fav-btn"
-            removeFav.innerText = "Remove From Favorites"
-            beerArea.append(removeFav)
-            removeFav.addEventListener("click", destroyFav)
+            // let removeFav = document.createElement("button")
+            // removeFav.id = "remove-fav-btn"
+            // removeFav.innerText = "Remove From Favorites"
+            // beerArea.append(removeFav)
+            // removeFav.addEventListener("click", destroyFav)
             
             
         } else { // create add button functionality
@@ -210,24 +204,24 @@ function showBeer(event){
             })
     }
 
-    function destroyFav(){
-        const configObject = {
-            method: "DELETE",
-            headers: {"Content-Type": "application/json",
-            "Accept": "application/json"},
-            body: JSON.stringify({user_id: localStorage.userId, 
-                beer_id: selectedBeer
-            })}
+    // function destroyFav(){
+    //     const configObject = {
+    //         method: "DELETE",
+    //         headers: {"Content-Type": "application/json",
+    //         "Accept": "application/json"},
+    //         body: JSON.stringify({user_id: localStorage.userId, 
+    //             beer_id: selectedBeer
+    //         })}
             
-            fav_url = `http://localhost:3000/user_beers/${ubID}`
+    //         fav_url = `http://localhost:3000/user_beers/${ubID}`
 
-            fetch(fav_url, configObject)
-            .then(function(response){
-                return response.json();
-            }).then(newUserBeer => {
-                document.getElementById("remove-fav-btn").innerText = "Removed!"
-            })
-    }  
+    //         fetch(fav_url, configObject)
+    //         .then(function(response){
+    //             return response.json();
+    //         }).then(newUserBeer => {
+    //             document.getElementById("remove-fav-btn").innerText = "Removed!"
+    //         })
+    // }  
     } 
 
 
@@ -235,7 +229,6 @@ function createAccount() {
     accountContainer.style.display = "block";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "none";
-
     let accountCreate = document.getElementById('user-create')
     accountCreate.addEventListener('submit', () => {
         event.preventDefault()
@@ -258,7 +251,6 @@ function createAccount() {
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
               accountCreate.style.display = 'none'
-              fetchBeers()
         }
         })
     })
@@ -479,7 +471,7 @@ function createComment(event){
 
     let commentContent = textarea.value
 
-    debugger
+    
     fetch("http://localhost:3000/comments", {
         method: "POST",
         headers: {
@@ -490,7 +482,6 @@ function createComment(event){
     })
     .then(r => r.json())
     .then(comment => {
-    debugger
         let commentsDiv = document.getElementById("comments-div")
         let commentCard = document.createElement("card")
         let commentP = document.createElement("p")
