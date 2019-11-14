@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", function(){
 
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
+    let goBack = document.getElementById("go-back")
 
     createAccount()
-    logIn()
     fetchBeers()
 
 
@@ -106,10 +106,11 @@ function fetchBeers(){
 function showBeer(event){
  
     let selectedBeer = event.target.dataset.id
-  
+    let beerDiv = document.getElementById("single-beer")
     let commentButton = document.querySelector("button")
 
     browseBeersContainer.style.display = "none";
+    beerDiv.innerHTML = ""
     showBeerContainer.style.display = "block";
 
 
@@ -154,31 +155,6 @@ function showBeer(event){
     })
 }
 
-
-function logIn() {
-    let userLogin = document.getElementById('user-login')
-    userLogin.addEventListener('submit', () => {
-        event.preventDefault()
-        let username = document.getElementById('return-user').value
-        fetch("http://localhost:3000/users", {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Origin': "*"
-            },
-            body: JSON.stringify({'username': username })
-        })
-        .then(r => r.json())
-        .then(input => {
-            if (input.errors) {
-              alert(input.errors.username)
-            } else {
-              localStorage.getItem('userId', input.id)
-        }
-        })
-    })
-}
-
 function createAccount() {
     let accountCreate = document.getElementById('user-create')
     accountCreate.addEventListener('submit', () => {
@@ -198,15 +174,16 @@ function createAccount() {
               alert(input.errors.username)
             } else {
               localStorage.setItem('userId', input.id)
-            //   localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
+              accountCreate.style.display = 'none'
         }
         })
     })
 }
 
 
+goBack.addEventListener("click", fetchBeers)
   
 // search for beers
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
@@ -299,6 +276,7 @@ function showComments(selectedBeer){
     let commentButton = document.createElement("button")
     
    
+    commentsDiv.innerHTML = ""
     
     
     fetch(`http://localhost:3000/comments`)
@@ -348,15 +326,12 @@ function showComments(selectedBeer){
         userId.setAttribute("value", localStorage.userId)
      
 
-       
+        commentForm.innerHTML = ""
+
         commentButton.innerText = "Submit"
         commentForm.append(commentBox, commentButton)
-
         commentBoxDiv.append(commentForm)
-
         commentForm.addEventListener("submit", createComment)
-     
-
     })
 
 
@@ -455,7 +430,6 @@ function deleteComment(event){
     })
 
 }
-
 
 
 
