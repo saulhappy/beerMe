@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let showBeerContainer = document.getElementById("show-beer-container")
     let accountContainer = document.getElementById("account-container")
     
+    
     createAccount()
     
 
@@ -71,11 +72,12 @@ function fetchBeers(){
             let ibuP = document.createElement("p")
             let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
-            
+
             ebcP.dataset.id = beer.id
             nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
+
             image.src = beer.image_url
             image.style.height = "200px"
             image.style.width = "65px"
@@ -225,6 +227,58 @@ function showBeer(event){
             })
     }   
 }
+
+// show user
+const userShow = document.getElementById("user-show-link")
+userShow.addEventListener("click", showUser)
+
+function showUser() {
+    browseBeersContainer.style.display = "none";
+    let showUserContainer = document.getElementById("container-show-user")
+
+    fetch(`http://localhost:3000/user_beers`)
+    .then(r => r.json())
+    .then(beer => {
+            for(let i = 0; i < beer.length; i++){
+            
+            fetch(`http://localhost:3000/beers/${beer[i].beer_id}`)
+            .then(r => r.json())
+            .then(beer => {
+                let showBeerDiv = document.getElementById("single-beer")
+                let beerCard = document.createElement("card")
+                beerCard.setAttribute("class", "fav-beer-card")
+
+                let NameLi = document.createElement("p")
+
+                NameLi.innerText = beer.name
+                let taglineLi = document.createElement("li")
+                taglineLi.innerText = beer.tagline
+                let abvLi = document.createElement("li")
+                abvLi.innerText = beer.abv
+
+                let ibuLi = document.createElement("li")
+                ibuLi.innerText = beer.ibu
+                let description = document.createElement("li")
+                description.innerText = beer.description
+                let beerImage = document.createElement("img")
+                beerImage.src = beer.image_url
+                let ul = document.createElement("ul")
+
+                ul.append(abvLi, ibuLi)
+
+                beerCard.append(NameLi, taglineLi, beerImage, description, ul)
+
+                showUserContainer.append(beerCard)
+
+                showUserContainer.style.display = 'block'
+
+
+            })
+        }     
+    })  
+}
+
+
 
 function logIn() {
     let userLogin = document.getElementById('user-login')
