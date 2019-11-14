@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
     // uncomment the getBeers function and addBeer function to populate the database. 
+
     // getBeers(); 
     localStorage.clear()
     let browseBeersContainer = document.getElementById("browse-beers-container")
@@ -15,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function(){
             userFavs.push(favs[i].beer_id)
         }
         })
-    
+ 
     logIn()
     fetchBeers()
 
@@ -66,10 +67,8 @@ function fetchBeers(){
             let ibuP = document.createElement("p")
             let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
-
-
-
-    
+            
+            ebcP.dataset.id = beer.id
             nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
@@ -224,9 +223,32 @@ function showBeer(event){
 }
 
 function logIn() {
-    sessionStorage.clear()
     let userLogin = document.getElementById('user-login')
     userLogin.addEventListener('submit', () => {
+        event.preventDefault()
+        let username = document.getElementById('return-user').value
+        fetch("http://localhost:3000/users", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Origin': "*"
+            },
+            body: JSON.stringify({'username': username })
+        })
+        .then(r => r.json())
+        .then(input => {
+            if (input.errors) {
+              alert(input.errors.username)
+            } else {
+              localStorage.getItem('userId', input.id)
+        }
+        })
+    })
+}
+
+function createAccount() {
+    let accountCreate = document.getElementById('user-create')
+    accountCreate.addEventListener('submit', () => {
         event.preventDefault()
         let username = document.getElementById('username').value
         fetch("http://localhost:3000/users", {
@@ -242,13 +264,15 @@ function logIn() {
             if (input.errors) {
               alert(input.errors.username)
             } else {
-              sessionStorage.setItem('userId', input.id)
+              localStorage.setItem('userId', input.id)
+              localStorage.setItem('userName', input.username)
               let userId = document.getElementById("hidden_user_id")
               userId.setAttribute("value", localStorage.userId)
         }
         })
     })
-    }
+}
+
 
 // search for beers
 const beerNameSearch = document.getElementById("search-beer-name").querySelector('input');
@@ -341,6 +365,7 @@ function showComments(selectedBeer){
     let commentForm = document.getElementById("comment-form")
     let commentBox = document.createElement("textarea")
     let commentButton = document.createElement("button")
+  
     
    
     
@@ -355,12 +380,43 @@ function showComments(selectedBeer){
                 let commentCard = document.createElement("card")
                 let commentP = document.createElement("p")
                 let commentUser = document.createElement("p")
-                let commentBy = comment.user.username
+                let deleteButton = document.createElement("button")
+                let editButton = document.createElement("button")
+                let editForm = document.createElement("form")
+                let saveButton = document.createElement("button")
+                let editBox = document.createElement("textarea")
 
+                editForm.append(editBox, saveButton)
+                editForm.style.display = "none"
+
+                editBox.id = "edit-box"
+                saveButton.dataset.id = comment.id
+                saveButton.innerText = "Save"
+                editForm.dataset.id = comment.id
+                deleteButton.innerText = "Delete"
+                deleteButton.style.display = "none"
+                editButton.innerText = "Edit"
+                editButton.style.display = "none"
+                deleteButton.dataset.id = comment.id
+                editButton.dataset.id = comment.id
+                commentCard.dataset.id = comment.id
+      
+                deleteButton.addEventListener("click", deleteComment)
+                editButton.addEventListener("click", editComment)
+                
+                
+
+                
+                let commentBy = comment.user.username
                 commentUser.innerText = commentBy
                 commentP.innerText = comment.comment_text
-                commentCard.append(commentP, commentUser)
-                
+                commentCard.append(commentP, commentUser, editButton, deleteButton, editForm)
+
+             
+                if (comment.user_id == localStorage.userId){
+                    deleteButton.style.display = "block"
+                    editButton.style.display = "block"
+                }
                 
                 commentsDiv.append(commentCard)
                 commentCard.setAttribute("class", "comment-card") 
@@ -373,14 +429,13 @@ function showComments(selectedBeer){
         userId.setAttribute("value", localStorage.userId)
      
 
-       
+        commentBox.id = "comment_form_box"
         commentButton.innerText = "Submit"
         commentForm.append(commentBox, commentButton)
 
         commentBoxDiv.append(commentForm)
 
         commentForm.addEventListener("submit", createComment)
-     
 
     })
 
@@ -421,12 +476,14 @@ document.addEventListener("click", function(){
 
 function createComment(event){
     event.preventDefault()
-
+    console.log('I am a new comment')
  
     let beerId = document.getElementById("hidden_beer_id").value
     let userId = document.getElementById("hidden_user_id").value
 
-    let textarea = document.querySelector("textarea")
+    
+    let textarea = document.getElementById("comment_form_box")
+
     let commentContent = textarea.value
 
  
@@ -436,7 +493,7 @@ function createComment(event){
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({user_id: userId, beer_id: beerId, comment_text: commentContent})
+        body: JSON.stringify({user_id: localStorage.userId, beer_id: beerId, comment_text: commentContent})
     })
     .then(r => r.json())
     .then(comment => {
@@ -445,25 +502,143 @@ function createComment(event){
         let commentCard = document.createElement("card")
         let commentP = document.createElement("p")
         let commentUser = document.createElement("p")
-        // username not found
+        let deleteButton = document.createElement("button")
+        let editButton = document.createElement("button")
+        let editForm = document.createElement("form")
+        let editBox = document.createElement("textarea")
+        let saveButton = document.createElement("button")
         
+        
+
        
-        let commentBy = localStorage.userId
+
+        let commentBy = localStorage.userName
 
 
+
+
+        editForm.append(editBox, saveButton)
+        editForm.style.display = "none"
+
+        editBox.id = "edit-box"
+        saveButton.dataset.id = comment.id
+        saveButton.innerText = "Save"
+        editForm.dataset.id = comment.id
+        deleteButton.innerText = "Delete"
+        deleteButton.style.display = "none"
+        editButton.innerText = "Edit"
+        editButton.style.display = "none"
+        deleteButton.dataset.id = comment.id
+        editButton.dataset.id = comment.id
+        commentCard.dataset.id = comment.id
+
+
+        
         commentUser.innerText = commentBy
         commentP.innerText = comment.comment_text
+        commentP.setAttribute("class", "commentP")
         commentCard.append(commentP, commentUser)
         commentCard.dataset.commentId = comment.user_id
         commentCard.dataset.beerId = comment.beer_id
-                
+        
+        commentCard.append(editButton, deleteButton, editForm)
         commentsDiv.append(commentCard)
         commentCard.setAttribute("class", "comment-card") 
+        if (comment.user_id == localStorage.userId){
+            deleteButton.style.display = "block"
+            editButton.style.display = "block"
+        }
+      
+        deleteButton.addEventListener("click", deleteComment)
+        editButton.addEventListener("click", editComment)
+        saveButton.addEventListener("click", editCommentFetch)
+        textarea.value = ""
+    })
+
+} 
+
+}
+
+
+function deleteComment(event){
+    let commentToDel = event.target.dataset.id
+    let commentParent = event.target.parentElement
+
+  
+    fetch(`http://localhost:3000/comments/${commentToDel}`, {
+        method: "DELETE",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({id: commentToDel})
+    })
+    .then(r => r.json())
+    .then(comment => {
+        commentParent.remove()
     })
 
 }
 
 
 
+function editComment(event){
+    event.preventDefault()
+    console.log("edit comment function")
+    let commentCard = event.target.parentElement
+    let editForm = commentCard.querySelector("form")
+    let oldText = commentCard.querySelector("p")
+    let editBox = editForm.querySelector("textarea")
+    let saveButton = editForm.querySelector("button")
+   
+    
+
+    editBox.value = oldText.innerText
+
+    editForm.style.display = "block"
+    
+    // saveButton.addEventListener("click", editCommentFetch)
 }
+
+
+
+
+
+function editCommentFetch(event){
+    event.preventDefault()
+
+    let commentToEdit = event.target.dataset.id
+    commentToEdit = parseInt(commentToEdit)
+    
+    let commentForm = event.target.parentElement
+    let newText = commentForm.querySelector("#edit-box").value
+    
+    let commentCard = commentForm.parentElement
+  
+    let commentP = commentCard.getElementsByClassName("commentP")
+    commentP = commentP[0]
+    commentP.innerText = newText
+   
+
+
+
+    fetch(`http://localhost:3000/comments/${commentToEdit}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json",
+                    "Accept": "application/json"},
+        body: JSON.stringify({comment_text: newText})
+    })
+    .then(r => r.json())
+    .then(comment => {
+        let editForm = commentCard.querySelector("form")
+        editForm.style.display = "none"
+    })
+   
+
+}
+
+
+
+
+
+
+
 })
+

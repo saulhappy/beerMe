@@ -17,8 +17,8 @@ class CommentsController < ApplicationController
     end
 
     def update
-        Comment.find(params["id"]).update(comment_params)
-        render json: Comment.find(params["id"])
+        comment = Comment.find(params["id"]).update(comment_params)
+        render json: comment
     end
 
     def destroy
@@ -28,12 +28,12 @@ class CommentsController < ApplicationController
     private
     
     def comment_params
-        params.permit(:comment_text, :beer_id, :user_id)
+        params.permit(:id, :comment_text, :beer_id, :user_id)
     end
 
     def comment_serializer
         {
-            :only => [:comment_text, :beer_id, :user_id],
+            :only => [:id, :comment_text, :beer_id, :user_id],
             :include => {:user => {
                 :only => [:username]
             }}
