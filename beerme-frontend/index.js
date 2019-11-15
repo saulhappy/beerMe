@@ -173,9 +173,10 @@ function showBeer(event){
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
 
-        let beerArea1 = document.getElementById("fav-button-area-1") 
-        
-        let beerArea2 = document.getElementById("fav-button-area-2") 
+        let beerArea1 = document.createElement("fav-button-area-1") 
+        beerArea1.setAttribute("class", "beer-area-1")
+        let beerArea2 = document.getElementById("fav-button-area-2")
+        beerArea2.setAttribute("class", "beer-area-2")
 
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
             beerArea1.innerText = "This is one of your favorite beers"
