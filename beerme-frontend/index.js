@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     let accountContainer = document.getElementById("account-container")
+   // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
 
        
     createAccount()
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
-    accountContainer.style.display = "show";
+    accountContainer.style.display = "none";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "block";
     let beerList = document.getElementById("beer-list")
