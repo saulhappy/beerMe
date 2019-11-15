@@ -72,26 +72,35 @@ function fetchBeers(){
             let ibuP = document.createElement("p")
             let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
+            let frontDiv = document.createElement("div")
+            let backDiv = document.createElement("div")
+
+            backDiv.classList.add("card-back")
+            frontDiv.classList.add("card-front")
+            card.classList.add("beer-card")
+            image.setAttribute("class", "beers-card-img")
+            nameP.setAttribute("class", "beer-list-beerName")
+            ebcP.classList.add("beer-card-details")
+            abvP.classList.add("beer-card-details")
+            ibuP.classList.add("beer-card-details")
+            foodPairingUl.classList.add("beer-card-details")
 
             ebcP.dataset.id = beer.id
-            nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
 
             image.src = beer.image_url
-            image.style.height = "200px"
-            image.style.width = "65px"
             image.dataset.id = beer.id
             image.class = "card-image"
-            abvP.setAttribute("class", "abv-value")
+            abvP.classList.add("abv-value")
             abvP.innerText = `ABV: ${beer.abv}`
 
-            ibuP.setAttribute("class", "ibu-value")
+            ibuP.classList.add("ibu-value")
             ibuP.innerText = `IBU: ${beer.ibu}`
-            ebcP.setAttribute("class", "ebc-value")
+            ebcP.classList.add("ebc-value")
             ebcP.innerText = `EBC: ${beer.ebc}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
-            foodPairingUl.setAttribute("class", "beer-pairings")
+            foodPairingUl.classList.add("beer-pairings")
           
             abvP.dataset.id = beer.id
             ibuP.dataset.id = beer.id
@@ -101,9 +110,12 @@ function fetchBeers(){
 
             card.dataset.id = beer.id
 
+            frontDiv.append(nameP, image)
+            backDiv.append(abvP, ibuP, ebcP, foodPairingUl)
+            card.append(frontDiv, backDiv)
 
-            card.append(nameP, image, abvP, ibuP, ebcP, foodPairingUl)
 
+           
             beerList.append(card)
             card.addEventListener("click", showBeer)
             
@@ -350,9 +362,9 @@ beerNameSearch.addEventListener('keyup', function(e){
     Array.from(beerList).forEach(function(beer){
         const beerName = beer.innerText
         if (beerName.toLowerCase().indexOf(term) != -1){
-            beer.parentElement.style.display = 'block';
+            beer.parentElement.parentElement.style.display = 'block';
         } else {
-            beer.parentElement.style.display = 'none';
+            beer.parentElement.parentElement.style.display = 'none';
         }
         
         })    
@@ -367,9 +379,9 @@ beerPairingSearch.addEventListener('keyup', function(e){
     Array.from(beerPairings).forEach(function(pairing){
         const beerPairing = pairing.innerText
         if (beerPairing.toLowerCase().indexOf(term) != -1){
-            pairing.parentElement.style.display = 'block';
+            pairing.parentElement.parentElement.style.display = 'block';
         } else {
-            pairing.parentElement.style.display = 'none';
+            pairing.parentElement.parentElement.style.display = 'none';
         }
         
         })    
@@ -393,9 +405,11 @@ abvSlider.oninput = function() {
         const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
         
         if (beerABV > abvSliderInput){
-            abv.parentElement.style.display = 'block';
+            abv.parentElement.parentElement.style.display = 'block';
+           
         } else {
-            abv.parentElement.style.display = 'none';
+            abv.parentElement.parentElement.style.display = 'none';
+           
         }
         
     })     
@@ -416,9 +430,9 @@ ibuSlider.oninput = function() {
         const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
 
         if (beerIBU > ibuSliderInput){
-            ibu.parentElement.style.display = 'block';
+            ibu.parentElement.parentElement.style.display = 'block';
         } else {
-            ibu.parentElement.style.display = 'none';
+            ibu.parentElement.parentElement.style.display = 'none';
         }
         
     })  
