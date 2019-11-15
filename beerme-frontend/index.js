@@ -31,9 +31,6 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     })
 
-    createAccount()
-    fetchBeers()
- 
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
