@@ -8,9 +8,12 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script type="text/javascript">
+    let initialSrc = "logo.png"
+    let scrollSrc =
         $(window).on('scroll', function(){
             if ($(window).scrollTop()){
                 $('nav').addClass('black');
+             
             }
             else {
                 $('nav').removeClass('black');
@@ -37,9 +40,7 @@
         
     </nav>
         <section class="sec1"></section>
-        <section class="content"></section>
-        <section class="sec2"></section>
-        <section class="sec3"></section>
+      
        
 
 
@@ -60,10 +61,10 @@
 
     <container id="browse-beers-container" class="browse-beers">
         <form id = "search-beer-name">
-            <input type = "text" placeholder="Search beer names...">  
+            <input class="search-box" type= "text" placeholder="Search beer names...">  
         </form>
         <form id = "search-beer-pairings">
-            <input type = "text" placeholder="Search beer pairings...">  
+            <input class="search-box" type="text" placeholder="Search beer pairings...">  
         </form>
         <div class="slidecontainer">
             <input type="range" min="0" max="55" value="30" class="slider" id="abv-slider">
@@ -96,7 +97,7 @@
 
                 </form>
             </div>
-            <button id='go-back'>Go Back</button>
+          
             
         <div id= "fav-button-area">
         </div>
