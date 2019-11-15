@@ -8,6 +8,14 @@ document.addEventListener("DOMContentLoaded", function(){
     let goBack = document.getElementById("browse-beers-button")
     let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
+
+   // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
+
+   let ubid
+       
+    createAccount()
+
+
     let browseBeers = document.getElementById("browse-beers-button")
     // let randomBeer = Math.floor(Math.random() * 100)
     let userFavs = []  // get fav beers
@@ -221,12 +229,12 @@ function showBeer(event){
 
         ul.append(abvLi, ibuLi)
 
-        let favDiv = document.createElement("div")
-        favDiv.setAttribute("class", "fav-div")
+        let favBeerDiv = document.createElement("div")
+        favBeerDiv.setAttribute("class", "fav-div")
 
 
 
-        beerCard.append(NameLi, taglineLi, beerImage, description, ul, favDiv)
+        beerCard.append(NameLi, taglineLi, beerImage, description, ul, favBeerDiv)
 
 
         showBeerDiv.append(beerCard)
@@ -237,36 +245,22 @@ function showBeer(event){
 
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
-
-
-        let beerArea1 = document.createElement("fav-button-area-1") 
-        beerArea1.setAttribute("class", "beer-area-1")
-        let beerArea2 = document.getElementById("fav-button-area-2")
-        beerArea2.setAttribute("class", "beer-area-2")
-
-        let beerArea = document.getElementById("fav-button-area")
-        // beerArea.innerHTML('')
-        let addingFav
+        let addFavBeerBtn = document.createElement("button")
+        let delFavBeerBtn = document.createElement("button")
+    
 
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
-            beerArea1.innerText = "This is one of your favorite beers"
-            // let removeFav = document.createElement("button")
-            // removeFav.id = "remove-fav-btn"
-            // removeFav.innerText = "Remove From Favorites"
-            // beerArea.append(removeFav)
-            // removeFav.addEventListener("click", destroyFav)
-            showBeerDiv.append(beerArea1)
+            favBeerDiv.innerText = "This is one of your favorite beers"
+            delFavBeerBtn.innerText = "Remove From Favorites"
+            delFavBeerBtn.innerHTML = '<button id="delFavBeerBtn">Remove From Favorites</button>'
+            showBeerDiv.append(favBeerDiv,delFavBeerBtn)
+            delFavBeerBtn.addEventListener("click", delFav)
             
             
         } else { // create add button functionality
-            console.log('am I being called?')
-            beerArea.innerHTML = '<button id="fav-btn">Add to favorites</button>'
-            // console.log('am i being read?')
-            // addingFav = document.createElement("button")
-            // addingFav.id = "fav-btn"
-            // addingFav.innerText = "Add to Favorites"
-            // beerArea.append(addingFav)
-            beerArea.addEventListener("click", addFav)
+            addFavBeerBtn.innerHTML = '<button id="addFavBeerBtn">Add to favorites</button>'
+            showBeerDiv.append(addFavBeerBtn)
+            addFavBeerBtn.addEventListener("click", addFav)
            
         }
     })
@@ -287,30 +281,36 @@ function addFav(){
             .then(function(response){
                 return response.json();
             }).then(newUserBeer => {
-                document.getElementById("fav-btn").innerText = "Beer Favorited!"
-                document.getElementById("fav-button-area").dataset.ubid = newUserBeer.id
+                document.getElementById("addFavBeerBtn").innerText = "Beer Favorited!"
+                console.log(newUserBeer)
+                ubid = newUserBeer.id
+                console.log(ubid)
             })
-    }
+        }
+        
 
-    // function destroyFav(){
-    //     const configObject = {
-    //         method: "DELETE",
-    //         headers: {"Content-Type": "application/json",
-    //         "Accept": "application/json"},
-    //         body: JSON.stringify({user_id: localStorage.userId, 
-    //             beer_id: selectedBeer
-    //         })}
+    function delFav(){
+        document.getElementById("delFavBeerBtn").innerText = "Removed!"
+        const configObject = {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json",
+            "Accept": "application/json"},
+            body: JSON.stringify({user_id: localStorage.userId, 
+                beer_id: selectedBeer
+            })}
             
-    //         fav_url = `http://localhost:3000/user_beers/${ubID}`
+            fav_url = `http://localhost:3000/user_beers/${ubid}`
 
-    //         fetch(fav_url, configObject)
-    //         .then(function(response){
-    //             return response.json();
-    //         }).then(newUserBeer => {
-    //             document.getElementById("remove-fav-btn").innerText = "Removed!"
-    //         })
-    // }  
+            fetch(fav_url, configObject)
+            .then(function(response){
+                return response.json();
+            }).then(newUserBeer => {
+                
+            })
+        }  
+        
     } 
+    
 
 // show user
 const userShow = document.getElementById("user-show-link")
