@@ -168,7 +168,12 @@ function showBeer(event){
 
         ul.append(abvLi, ibuLi)
 
-        beerCard.append(NameLi, taglineLi, beerImage, description, ul)
+        let favDiv = document.createElement("div")
+        favDiv.setAttribute("class", "fav-div")
+
+
+
+        beerCard.append(NameLi, taglineLi, beerImage, description, ul, favDiv)
 
 
         showBeerDiv.append(beerCard)
@@ -179,16 +184,25 @@ function showBeer(event){
 
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
+
+
+        let beerArea1 = document.createElement("fav-button-area-1") 
+        beerArea1.setAttribute("class", "beer-area-1")
+        let beerArea2 = document.getElementById("fav-button-area-2")
+        beerArea2.setAttribute("class", "beer-area-2")
+
         let beerArea = document.getElementById("fav-button-area")
         // beerArea.innerHTML('')
         let addingFav
+
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
-            beerArea.innerText = "This is one of your favorite beers"
+            beerArea1.innerText = "This is one of your favorite beers"
             // let removeFav = document.createElement("button")
             // removeFav.id = "remove-fav-btn"
             // removeFav.innerText = "Remove From Favorites"
             // beerArea.append(removeFav)
             // removeFav.addEventListener("click", destroyFav)
+            showBeerDiv.append(beerArea1)
             
             
         } else { // create add button functionality
@@ -252,18 +266,36 @@ userShow.addEventListener("click", showUser)
 function showUser() {
     browseBeersContainer.style.display = "none";
     let showUserContainer = document.getElementById("container-show-user")
+    showUserContainer.setAttribute("class", "show-user-container")
+
+    let showBeerDiv = document.getElementById("single-beer")
+    showBeerDiv.setAttribute("class", "fav-beer-div")
+    let showBeerDivTitle = document.createElement("h3")
+    showBeerDivTitle.setAttribute("class", "fav-beer-div-title")
+    showBeerDivTitle.innerText = "Your Favorite Beers"
+    showBeerDiv.append(showBeerDivTitle)
+
+    let commentDiv = document.createElement("div")
+    let commentDivTitle = document.createElement("h3")
+    commentDivTitle.setAttribute("class", "user-comments-div-title")
+    commentDivTitle.innerText = "Your Comments"
+    commentDiv.setAttribute("class", "user-comments-div")
+    commentDiv.append(commentDivTitle)
+
+
+    let commentCard = document.createElement("card")
 
     fetch(`http://localhost:3000/user_beers`)
     .then(r => r.json())
     .then(beer => {
             for(let i = 0; i < beer.length; i++){
-            
+
             fetch(`http://localhost:3000/beers/${beer[i].beer_id}`)
             .then(r => r.json())
             .then(beer => {
-                let showBeerDiv = document.getElementById("single-beer")
+
                 let beerCard = document.createElement("card")
-                beerCard.setAttribute("class", "fav-beer-card")
+                beerCard.setAttribute("class", "beer-card")
 
                 let NameLi = document.createElement("p")
 
@@ -285,14 +317,30 @@ function showUser() {
 
                 beerCard.append(NameLi, taglineLi, beerImage, description, ul)
 
-                showUserContainer.append(beerCard)
+                showBeerDiv.append(beerCard)
+                showUserContainer.append(showBeerDiv)
 
                 showUserContainer.style.display = 'block'
-
-
             })
-        }     
-    })  
+        }    
+    }) 
+    // comments sections
+    fetch(`http://localhost:3000/comments`)
+    .then(r => r.json())
+    .then(comment => {
+        for(let i = 0; i < comment.length; i++){
+
+            commentCard.setAttribute("class", "show-user-comment-card")
+            
+            let textComment = document.createElement("p")
+            textComment.setAttribute("class", "user-show-comment")
+            textComment.innerText = comment[i].beer.name + ": " + comment[i].comment_text
+
+            commentCard.append(textComment)
+        }            
+        commentDiv.append(commentCard)
+        showUserContainer.append(commentDiv) 
+    })   
 }
 
 
@@ -450,11 +498,8 @@ function showComments(selectedBeer){
     let commentBox = document.createElement("textarea")
     let commentButton = document.createElement("button")
   
-    
-   
     commentsDiv.innerHTML = ""
-    
-    
+      
     fetch(`http://localhost:3000/comments`)
     .then(r => r.json())
     .then(comments => {
