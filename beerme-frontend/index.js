@@ -129,7 +129,6 @@ function fetchBeers(){
 
 
 function showBeer(event){
- 
     let selectedBeer = event.target.dataset.id
     let beerDiv = document.getElementById("single-beer")
     let commentButton = document.querySelector("button")
@@ -180,8 +179,9 @@ function showBeer(event){
 
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
-        let beerArea = document.getElementById("fav-button-area") 
-
+        let beerArea = document.getElementById("fav-button-area")
+        // beerArea.innerHTML('')
+        let addingFav
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
             beerArea.innerText = "This is one of your favorite beers"
             // let removeFav = document.createElement("button")
@@ -192,17 +192,20 @@ function showBeer(event){
             
             
         } else { // create add button functionality
-            let addingFav = document.createElement("button")
-            addingFav.id = "fav-btn"
-            addingFav.innerText = "Add to Favorites"
-            beerArea.append(addingFav)
+            console.log('am I being called?')
+            beerArea.innerHTML = '<button id="fav-btn">Add to favorites</button>'
+            // console.log('am i being read?')
+            // addingFav = document.createElement("button")
+            // addingFav.id = "fav-btn"
+            // addingFav.innerText = "Add to Favorites"
+            // beerArea.append(addingFav)
             beerArea.addEventListener("click", addFav)
+           
         }
     })
     
     
     function addFav(){
-
         const configObject = {
             method: "POST",
             headers: {"Content-Type": "application/json",
