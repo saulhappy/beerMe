@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     let accountContainer = document.getElementById("account-container")
+   // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
 
        
     createAccount()
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
-    accountContainer.style.display = "show";
+    accountContainer.style.display = "none";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "block";
     let beerList = document.getElementById("beer-list")
@@ -72,26 +73,35 @@ function fetchBeers(){
             let ibuP = document.createElement("p")
             let ebcP = document.createElement("p")
             let foodPairingUl = document.createElement("ul")
+            let frontDiv = document.createElement("div")
+            let backDiv = document.createElement("div")
+
+            backDiv.classList.add("card-back")
+            frontDiv.classList.add("card-front")
+            card.classList.add("beer-card")
+            image.setAttribute("class", "beers-card-img")
+            nameP.setAttribute("class", "beer-list-beerName")
+            ebcP.classList.add("beer-card-details")
+            abvP.classList.add("beer-card-details")
+            ibuP.classList.add("beer-card-details")
+            foodPairingUl.classList.add("beer-card-details")
 
             ebcP.dataset.id = beer.id
-            nameP.setAttribute("class", "beer-list-beerName")
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
 
             image.src = beer.image_url
-            image.style.height = "200px"
-            image.style.width = "65px"
             image.dataset.id = beer.id
             image.class = "card-image"
-            abvP.setAttribute("class", "abv-value")
+            abvP.classList.add("abv-value")
             abvP.innerText = `ABV: ${beer.abv}`
 
-            ibuP.setAttribute("class", "ibu-value")
+            ibuP.classList.add("ibu-value")
             ibuP.innerText = `IBU: ${beer.ibu}`
-            ebcP.setAttribute("class", "ebc-value")
+            ebcP.classList.add("ebc-value")
             ebcP.innerText = `EBC: ${beer.ebc}`
             foodPairingUl.innerText = `Food Pairings: ${beer.food_pairing}`
-            foodPairingUl.setAttribute("class", "beer-pairings")
+            foodPairingUl.classList.add("beer-pairings")
           
             abvP.dataset.id = beer.id
             ibuP.dataset.id = beer.id
@@ -101,9 +111,12 @@ function fetchBeers(){
 
             card.dataset.id = beer.id
 
+            frontDiv.append(nameP, image)
+            backDiv.append(abvP, ibuP, ebcP, foodPairingUl)
+            card.append(frontDiv, backDiv)
 
-            card.append(nameP, image, abvP, ibuP, ebcP, foodPairingUl)
 
+           
             beerList.append(card)
             card.addEventListener("click", showBeer)
             
@@ -116,7 +129,6 @@ function fetchBeers(){
 
 
 function showBeer(event){
- 
     let selectedBeer = event.target.dataset.id
     let beerDiv = document.getElementById("single-beer")
     let commentButton = document.querySelector("button")
@@ -173,10 +185,15 @@ function showBeer(event){
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
 
+
         let beerArea1 = document.createElement("fav-button-area-1") 
         beerArea1.setAttribute("class", "beer-area-1")
         let beerArea2 = document.getElementById("fav-button-area-2")
         beerArea2.setAttribute("class", "beer-area-2")
+
+        let beerArea = document.getElementById("fav-button-area")
+        // beerArea.innerHTML('')
+        let addingFav
 
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
             beerArea1.innerText = "This is one of your favorite beers"
@@ -189,17 +206,20 @@ function showBeer(event){
             
             
         } else { // create add button functionality
-            let addingFav = document.createElement("button")
-            addingFav.id = "fav-btn"
-            addingFav.innerText = "Add to Favorites"
-            beerArea.append(addingFav)
+            console.log('am I being called?')
+            beerArea.innerHTML = '<button id="fav-btn">Add to favorites</button>'
+            // console.log('am i being read?')
+            // addingFav = document.createElement("button")
+            // addingFav.id = "fav-btn"
+            // addingFav.innerText = "Add to Favorites"
+            // beerArea.append(addingFav)
             beerArea.addEventListener("click", addFav)
+           
         }
     })
     
     
     function addFav(){
-
         const configObject = {
             method: "POST",
             headers: {"Content-Type": "application/json",
@@ -394,9 +414,9 @@ beerNameSearch.addEventListener('keyup', function(e){
     Array.from(beerList).forEach(function(beer){
         const beerName = beer.innerText
         if (beerName.toLowerCase().indexOf(term) != -1){
-            beer.parentElement.style.display = 'block';
+            beer.parentElement.parentElement.style.display = 'block';
         } else {
-            beer.parentElement.style.display = 'none';
+            beer.parentElement.parentElement.style.display = 'none';
         }
         
         })    
@@ -411,9 +431,9 @@ beerPairingSearch.addEventListener('keyup', function(e){
     Array.from(beerPairings).forEach(function(pairing){
         const beerPairing = pairing.innerText
         if (beerPairing.toLowerCase().indexOf(term) != -1){
-            pairing.parentElement.style.display = 'block';
+            pairing.parentElement.parentElement.style.display = 'block';
         } else {
-            pairing.parentElement.style.display = 'none';
+            pairing.parentElement.parentElement.style.display = 'none';
         }
         
         })    
@@ -437,9 +457,11 @@ abvSlider.oninput = function() {
         const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
         
         if (beerABV > abvSliderInput){
-            abv.parentElement.style.display = 'block';
+            abv.parentElement.parentElement.style.display = 'block';
+           
         } else {
-            abv.parentElement.style.display = 'none';
+            abv.parentElement.parentElement.style.display = 'none';
+           
         }
         
     })     
@@ -460,9 +482,9 @@ ibuSlider.oninput = function() {
         const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
 
         if (beerIBU > ibuSliderInput){
-            ibu.parentElement.style.display = 'block';
+            ibu.parentElement.parentElement.style.display = 'block';
         } else {
-            ibu.parentElement.style.display = 'none';
+            ibu.parentElement.parentElement.style.display = 'none';
         }
         
     })  

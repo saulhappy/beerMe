@@ -8,9 +8,12 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script type="text/javascript">
+    let initialSrc = "logo.png"
+    let scrollSrc =
         $(window).on('scroll', function(){
             if ($(window).scrollTop()){
                 $('nav').addClass('black');
+             
             }
             else {
                 $('nav').removeClass('black');
@@ -20,6 +23,9 @@
     </script>
 
 
+
+
+    <link rel='icon' href='favicon.ico' type='image/x-icon'/ >
 
     <title>BeerMe</title>
 </head>
@@ -36,10 +42,8 @@
          </ul>
         
     </nav>
-        <section class="sec1"></section>
-        <section class="content"></section>
-        <section class="sec2"></section>
-        <section class="sec3"></section>
+    
+      
        
 
 
@@ -51,19 +55,20 @@
     <container id="account-container">
 
     <form id='user-create' accept-charset="utf-8">
-        <h3>Create Your Account</h3>
-        <input type="text" name="username" class="input" id="username" placeholder="Enter Your Name" autocomplete="off"/>
-        <input type="submit" name="submit" class="button" id="submit" value="Submit" /><br><br>
+        <h1 id="create-acc">Create Account</h1>
+        <input class="log-in" type="text" name="username" class="input" id="username" placeholder="Enter Your Name" autocomplete="off"/>
+        <input class="log-in-button" type="submit" name="submit" class="button" id="submit" value="Submit" /><br><br>
     </form> 
    </container>
-
-
-    <container id="browse-beers-container" class="browse-beers">
-        <form id = "search-beer-name">
-            <input type = "text" placeholder="Search beer names...">  
+   
+   <!-- this should be in the userfav container -->
+   
+   <container id="browse-beers-container" class="browse-beers">
+       <form id = "search-beer-name">
+           <input class="search-box" type= "text" placeholder="Search beer names...">  
         </form>
         <form id = "search-beer-pairings">
-            <input type = "text" placeholder="Search beer pairings...">  
+            <input class="search-box" type="text" placeholder="Search beer pairings...">  
         </form>
         <div class="slidecontainer">
             <input type="range" min="0" max="55" value="30" class="slider" id="abv-slider">
@@ -73,8 +78,8 @@
             <input type="range" min="0" max="400" value="200" class="slider" id="ebc-slider">
             EBC Content: <span id="ebc-content"></span>
         </div>
-        
         <h3 id = "user-show-link">MY BEER STUFF</h3>
+        
         <div id="beer-list">
             
         </div>
@@ -96,7 +101,7 @@
 
                 </form>
             </div>
-            <button id='go-back'>Go Back</button>
+          
             
         <!-- <div id= "fav-button-area">
         </div> -->

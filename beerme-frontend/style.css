@@ -1,10 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:700&display=swap');
 
+@import url('https://fonts.googleapis.com/css?family=Questrial|Varela+Round&display=swap');
+
+
+
 
 * {
     box-sizing: border-box;
     padding: 0;
-    margin: 0;
+	margin: 0;
+	
 }
 
 body {
@@ -12,6 +17,13 @@ body {
 	margin: 0;
 	padding: 0;
 	font-family: sans-serif;
+	background: url(backgroundalt2.jpg);
+
+	width: 100%;
+	height: 100vh;
+
+	background-size: cover;
+	
 }
 
 nav {
@@ -26,7 +38,7 @@ nav {
 }
 
 nav.black {
-	background: rgba(0, 0, 0, .7);
+	background: rgba(0, 0, 0, .5);
 	height: 80px;
 	padding: 10px 50px;
 }
@@ -83,12 +95,35 @@ nav ul li a:hover {
 	background-size: cover;
 } */
 
+#user-create {
+	text-align: center;
+}
 
+#create-acc {
+	padding-bottom: 20px;
+	text-align: center;
+	font-family: 'Questrial', sans-serif;
+	font-weight: bold;
+	text-shadow: 1px 1px whitesmoke;
+	
+}
 
+.comment-card {
+	background-color: rgba(75, 75, 75, 0.8);
+    border: solid 2px;
+    font-family: Arial;
+	font-size: medium;
+	width: 400px;
+	height: 200px;
+	padding-tip: 100px;
+}
 
 #account-container {
+	text-align: center;
 	padding-top: 300px;
+	
 }
+
 
 
 #browse-beers-container {
@@ -102,16 +137,81 @@ nav ul li a:hover {
 
 
 #beer-list {
+
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 40px;
-    padding: 60px 0;
+	padding: 60px 0;
+	
+	
+}
+
+#search-beer-name {
+padding-bottom: 10px;
+text-align: center;
+
+}
+
+#search-beer-pairings {
+	padding-bottom: 50px;
+	text-align: center;
+	
+}
+
+#comments-div {
+	padding-top: 100px;
+	padding-left: 100px;
+	display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-gap: 4px;
+	width: 200px;
+	text-align: center;
+
+}
+
+.comment-form {
+	display: grid;
+	text-align: center;
+	padding-left: 400px;
+	width: 300px;
+	height: 100px;
+}
+
+#single-beer {
+	text-align: center;
+}
+
+.log-in {
+	height: 40px;
+	width: 250px;
+	text-align: center;
+	border: 2px solid;
+	border-radius: 25px;
+	
+}
+
+.log-in-button {
+	margin-left: 2100px;
+}
+
+.search-box {
+	height: 30px;
+	width: 300px;
+	text-align: center;
+}
+
+.slidecontainer {
+	text-align: center;
+}
+
+.slider {
+	background-color: red;
 }
 
 card {
     
 
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(82, 82, 82, 0.3);
     text-align: left;
     font-family: Arial;
     font-size: medium;
@@ -120,6 +220,28 @@ card {
 
 card img {
     float: right;
+}
+
+.beers-card-img {
+	height: 200px;
+	background: transparent no-repeat center;
+	background-size: cover;
+}
+
+.beer-list-beerName {
+	font-family: 'Varela Round', sans-serif;
+	font-size: 20px;
+	text-align: center;
+	font-weight: bold;
+	
+}
+
+.beer-card-details {
+	font-family: 'Questrial', sans-serif;
+	padding-top: 20px;
+	float: bottom;
+	bottom: 0;
+	left: 0;
 }
 
 .slider {
@@ -139,6 +261,4 @@ card img {
   }
 
 
-.comment-card {
-    background-color: white;
-}
+
