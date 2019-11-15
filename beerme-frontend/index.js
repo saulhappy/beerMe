@@ -8,12 +8,14 @@ document.addEventListener("DOMContentLoaded", function(){
     let goBack = document.getElementById("browse-beers-button")
     let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
+    let mainLogo = document.getElementById("beer-cap-logo")
+    mainLogo.addEventListener("click",fetchBeers)
 
     let favBeerContainer = document.getElementById("container-show-user")
 
    // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
 
-   let ubid
+
        
     createAccount()
 
