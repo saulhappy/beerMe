@@ -548,9 +548,9 @@ ibuSlider.oninput = function() {
         const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
 
         if (beerIBU > ibuSliderInput){
-            ibu.parentElement.parentElement.style.display = 'block';
+            ibu.parentElement.parentElement.parentElement.style.display = 'block';
         } else {
-            ibu.parentElement.parentElement.style.display = 'none';
+            ibu.parentElement.parentElement.parentElement.style.display = 'none';
         }
         
     })  
