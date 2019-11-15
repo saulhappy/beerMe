@@ -156,7 +156,12 @@ function showBeer(event){
 
         ul.append(abvLi, ibuLi)
 
-        beerCard.append(NameLi, taglineLi, beerImage, description, ul)
+        let favDiv = document.createElement("div")
+        favDiv.setAttribute("class", "fav-div")
+
+
+
+        beerCard.append(NameLi, taglineLi, beerImage, description, ul, favDiv)
 
 
         showBeerDiv.append(beerCard)
@@ -167,15 +172,19 @@ function showBeer(event){
 
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
-        let beerArea = document.getElementById("fav-button-area") 
+
+        let beerArea1 = document.getElementById("fav-button-area-1") 
+        
+        let beerArea2 = document.getElementById("fav-button-area-2") 
 
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
-            beerArea.innerText = "This is one of your favorite beers"
+            beerArea1.innerText = "This is one of your favorite beers"
             // let removeFav = document.createElement("button")
             // removeFav.id = "remove-fav-btn"
             // removeFav.innerText = "Remove From Favorites"
             // beerArea.append(removeFav)
             // removeFav.addEventListener("click", destroyFav)
+            showBeerDiv.append(beerArea1)
             
             
         } else { // create add button functionality
