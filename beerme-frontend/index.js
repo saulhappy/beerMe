@@ -5,14 +5,11 @@ document.addEventListener("DOMContentLoaded", function(){
     localStorage.clear()
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
+    let goBack = document.getElementById("browse-beers-button")
+    let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
-   // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
-
-       
-    createAccount()
-
-
     let browseBeers = document.getElementById("browse-beers-button")
+    // let randomBeer = Math.floor(Math.random() * 100)
     let userFavs = []  // get fav beers
     fetch("http://localhost:3000/user_beers")
     .then(r => r.json())
@@ -22,7 +19,8 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     })
 
-  
+    createAccount()
+    fetchBeers()
  
 
 // function getBeers(){
@@ -126,7 +124,62 @@ function fetchBeers(){
 
 }
 
+beerMeBtn.addEventListener("click", showRandomBeer)
 
+function showRandomBeer() {
+    let randomDiv = document.getElementById("single-random-beer")
+    let randomBeer = Math.floor(Math.random() * 100)
+    let commentsDiv = document.getElementById("comments-div")
+    
+    browseBeersContainer.style.display = "none";
+    randomDiv.innerHTML = ""
+    commentsDiv.innerHTML = ""
+    showBeerContainer.style.display = "block";
+
+    fetch(`http://localhost:3000/beers/${randomBeer}`)
+    .then(r => r.json())
+    .then(beer => {
+
+        let randomDiv = document.getElementById("single-random-beer")
+        let randomBeerCard = document.createElement("card")
+
+        randomBeerCard.id = randomBeer.id
+      
+        let NameLi = document.createElement("p")
+
+        NameLi.innerText = `Name: ${beer.name}`
+        let taglineLi = document.createElement("p")
+        taglineLi.innerText = `Tagline: ${beer.tagline}`
+        let abvLi = document.createElement("p")
+        abvLi.innerText = `ABV: ${beer.abv}`
+
+      
+        let ibuLi = document.createElement("p")
+        ibuLi.innerText = `IBU: ${beer.ibu}`
+        let description = document.createElement("p")
+        description.innerText = `Description ${beer.description}`
+        let beerImage = document.createElement("img")
+        beerImage.src = beer.image_url
+        let ul = document.createElement("ul")
+
+
+        NameLi.classList.add("random-pick-name")
+        taglineLi.classList.add("random-pick-tagline")
+        description.classList.add("random-pick-description")
+        ibuLi.classList.add("random-pick-value")
+        abvLi.classList.add("random-pick-val")
+        beerImage.classList.add("random-pick-img")
+
+        ul.append(abvLi, ibuLi)
+
+        randomBeerCard.append(NameLi, taglineLi, beerImage, description, ul)
+
+
+        randomDiv.append(randomBeerCard)
+
+    })
+
+}
 
 function showBeer(event){
     let selectedBeer = event.target.dataset.id
@@ -219,7 +272,7 @@ function showBeer(event){
     })
     
     
-    function addFav(){
+function addFav(){
         const configObject = {
             method: "POST",
             headers: {"Content-Type": "application/json",
@@ -343,32 +396,6 @@ function showUser() {
     })   
 }
 
-
-
-function logIn() {
-    let userLogin = document.getElementById('user-login')
-    userLogin.addEventListener('submit', () => {
-        event.preventDefault()
-        let username = document.getElementById('return-user').value
-        fetch("http://localhost:3000/users", {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Origin': "*"
-            },
-            body: JSON.stringify({'username': username })
-        })
-        .then(r => r.json())
-        .then(input => {
-            if (input.errors) {
-              alert(input.errors.username)
-            } else {
-              localStorage.getItem('userId', input.id)
-        }
-        })
-    })
-}
-
 function createAccount() {
     accountContainer.style.display = "block";
     showBeerContainer.style.display = "none";
@@ -402,6 +429,7 @@ function createAccount() {
 }
 
 
+goBack.addEventListener("click", fetchBeers)
 browseBeers.addEventListener("click", fetchBeers)
   
 // search for beers
@@ -757,4 +785,5 @@ function editCommentFetch(event){
         editForm.style.display = "none"
 })
 }
+
 })
