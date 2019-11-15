@@ -235,6 +235,11 @@ text-align: center;
 	color: rgba(255, 0, 0, 0.699)
 }
 
+.random-beer-container {
+	padding-top: 200px;
+	margin-top: 300px;
+}
+
 .beer-name-show {
 	text-align: center;
 	font-family: 'Questrial', sans-serif;
@@ -251,6 +256,30 @@ text-align: center;
 	text-align: center;
 	padding-bottom: 40px;
 	
+}
+
+.single-random-beer {
+	background-color: rgba(82, 82, 82, 0.3);
+	text-align: left;
+	padding-top: 300px;
+	margin-top: 300px;
+}
+
+
+.rand-beer-card {
+	font-family: 'Questrial', sans-serif;
+	padding-top: 300px;
+	
+	bottom: 0;
+	left: 0;
+	text-align: center;
+}
+
+.rand-beer-card img {
+	height: 200px;
+	background: transparent no-repeat center;
+	background-size: cover;
+
 }
 
 #single-beer {

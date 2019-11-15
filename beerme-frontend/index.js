@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let goBack = document.getElementById("browse-beers-button")
     let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
-
+    let randomBeerContainer = document.getElementById("random-beer-container")
     let favBeerContainer = document.getElementById("container-show-user")
 
    // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
@@ -29,8 +29,7 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     })
 
-    createAccount()
-    fetchBeers()
+  
  
 
 // function getBeers(){
@@ -64,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
+    randomBeerContainer.style.display = "none"
     favBeerContainer.style.display = "none"
     accountContainer.style.display = "none";
     showBeerContainer.style.display = "none";
@@ -144,14 +144,25 @@ function fetchBeers(){
 beerMeBtn.addEventListener("click", showRandomBeer)
 
 function showRandomBeer() {
+
+    randomBeerContainer.style.display = "block"
+    browseBeersContainer.style.display = "none"
+    showBeerContainer.style.display = "none"
+    accountContainer.style.display = "none"
+    favBeerContainer.style.display = "none"
+
+    
+
+
+
     let randomDiv = document.getElementById("single-random-beer")
     let randomBeer = Math.floor(Math.random() * 100)
     let commentsDiv = document.getElementById("comments-div")
     
-    browseBeersContainer.style.display = "none";
+
     randomDiv.innerHTML = ""
     commentsDiv.innerHTML = ""
-    showBeerContainer.style.display = "block";
+    
 
     fetch(`http://localhost:3000/beers/${randomBeer}`)
     .then(r => r.json())
@@ -159,6 +170,7 @@ function showRandomBeer() {
 
         let randomDiv = document.getElementById("single-random-beer")
         let randomBeerCard = document.createElement("card")
+        
 
         randomBeerCard.id = randomBeer.id
       
@@ -191,8 +203,10 @@ function showRandomBeer() {
 
         randomBeerCard.append(NameLi, taglineLi, beerImage, description, ul)
 
+        randomBeerCard.classList.add("rand-beer-card")
 
         randomDiv.append(randomBeerCard)
+        randomBeerContainer.append(randomDiv)
 
     })
 
@@ -203,6 +217,7 @@ function showBeer(event){
     let beerDiv = document.getElementById("single-beer")
     let commentButton = document.querySelector("button")
 
+    randomBeerContainer.style.display = "none"
     accountContainer.style.display = "none";
     browseBeersContainer.style.display = "none";
     beerDiv.innerHTML = ""
@@ -248,7 +263,7 @@ function showBeer(event){
 
 
 
-        beerCard.append(nameP, taglineP, beerImage, description, ul, favDiv)
+        beerCard.append(nameP, taglineP, beerImage, description, ul, favBeerDiv)
 
 
 
@@ -334,6 +349,7 @@ const userShow = document.getElementById("favorites-button")
 userShow.addEventListener("click", showUser)
 
 function showUser() {
+    randomBeerContainer.style.display = "none"
     favBeerContainer.style.display = "block";
     browseBeersContainer.style.display = "none";
     let showUserContainer = document.getElementById("container-show-user")
@@ -505,13 +521,13 @@ abvSlider.oninput = function() {
     
     Array.from(abvVal).forEach(function(abv){
         const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
-        
+       
         if (beerABV > abvSliderInput){
-            abv.parentElement.parentElement.style.display = 'block';
-           
+            abv.parentElement.parentElement.parentElement.style.display = 'block';
+           debugger
         } else {
-            abv.parentElement.parentElement.style.display = 'none';
-           
+            abv.parentElement.parentElement.parentElement.style.display = 'none';
+           debugger
         }
         
     })     
