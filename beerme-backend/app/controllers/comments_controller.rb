@@ -34,6 +34,9 @@ class CommentsController < ApplicationController
     def comment_serializer
         {
             :only => [:id, :comment_text, :beer_id, :user_id],
+            :include => {:beer => {
+                :only => [:name]
+            }},
             :include => {:user => {
                 :only => [:username]
             }}

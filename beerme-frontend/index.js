@@ -6,19 +6,28 @@ document.addEventListener("DOMContentLoaded", function(){
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     let goBack = document.getElementById("go-back")
+    let beerMeBtn = document.getElementById("beer-me-btn")
     let accountContainer = document.getElementById("account-container")
-    let userFavs = []  // get fav beers
-    fetch("http://localhost:3000/user_beers")
-    .then(r => r.json())
-    .then(function(favs){
-        for(let i = 0; i < favs.length; i++){
-            userFavs.push(favs[i].beer_id)
-        }
-    })
+
 
     createAccount()
     fetchBeers()
- 
+
+
+
+    // beerMeBtn.addEventListener("click", () => {
+    // let randomBeer = []
+    // fetch("http://localhost:3000/beers")
+    // .then(r => r.json())
+    // .then(function(rando){
+    //     for(let i = 0; i < rando.length; i++){
+    //         randomBeer.push(rando[i])
+    //         // randomBeer[Math.floor(Math.random()*randomBeer.length)]
+    //         console.log(Math.random(rando))
+    //         debugger
+    //     }
+    // })
+    // })
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
@@ -163,8 +172,21 @@ function showBeer(event){
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
         let beerArea = document.getElementById("fav-button-area") 
-
-        if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
+        let addingFav = document.createElement("button")
+        let userFavs = []  // get fav beers
+        fetch("http://localhost:3000/user_beers")
+        .then(r => r.json())
+        .then(function(favs){
+            for(let i = 0; i < favs.length; i++){
+                userFavs.push(favs[i].beer_id)
+            }
+        })
+        addingFav.id = "fav-btn"
+        addingFav.innerText = "Add to Favorites"
+        // beerArea.innerHTML = ""
+        beerArea.append(addingFav)
+        beerArea.addEventListener("click", addFav)
+        if (userFavs.includes(`${beer.id}`)) { // if user already has beer, show text, and remove button
             beerArea.innerText = "This is one of your favorite beers"
             // let removeFav = document.createElement("button")
             // removeFav.id = "remove-fav-btn"
@@ -173,13 +195,7 @@ function showBeer(event){
             // removeFav.addEventListener("click", destroyFav)
             
             
-        } else { // create add button functionality
-            let addingFav = document.createElement("button")
-            addingFav.id = "fav-btn"
-            addingFav.innerText = "Add to Favorites"
-            beerArea.append(addingFav)
-            beerArea.addEventListener("click", addFav)
-        }
+        }   // create add button functionality
     })
     
     
@@ -255,6 +271,8 @@ function createAccount() {
         })
     })
 }
+
+
 
 
 goBack.addEventListener("click", fetchBeers)
