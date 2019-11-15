@@ -5,15 +5,21 @@ document.addEventListener("DOMContentLoaded", function(){
     localStorage.clear()
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
+    let goBack = document.getElementById("browse-beers-button")
+    let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
+
     let favBeerContainer = document.getElementById("container-show-user")
+
    // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
 
+   let ubid
        
     createAccount()
 
 
     let browseBeers = document.getElementById("browse-beers-button")
+    // let randomBeer = Math.floor(Math.random() * 100)
     let userFavs = []  // get fav beers
     fetch("http://localhost:3000/user_beers")
     .then(r => r.json())
@@ -23,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     })
 
-  
+    createAccount()
+    fetchBeers()
  
 
 // function getBeers(){
@@ -134,7 +141,62 @@ function fetchBeers(){
 
 }
 
+beerMeBtn.addEventListener("click", showRandomBeer)
 
+function showRandomBeer() {
+    let randomDiv = document.getElementById("single-random-beer")
+    let randomBeer = Math.floor(Math.random() * 100)
+    let commentsDiv = document.getElementById("comments-div")
+    
+    browseBeersContainer.style.display = "none";
+    randomDiv.innerHTML = ""
+    commentsDiv.innerHTML = ""
+    showBeerContainer.style.display = "block";
+
+    fetch(`http://localhost:3000/beers/${randomBeer}`)
+    .then(r => r.json())
+    .then(beer => {
+
+        let randomDiv = document.getElementById("single-random-beer")
+        let randomBeerCard = document.createElement("card")
+
+        randomBeerCard.id = randomBeer.id
+      
+        let NameLi = document.createElement("p")
+
+        NameLi.innerText = `Name: ${beer.name}`
+        let taglineLi = document.createElement("p")
+        taglineLi.innerText = `Tagline: ${beer.tagline}`
+        let abvLi = document.createElement("p")
+        abvLi.innerText = `ABV: ${beer.abv}`
+
+      
+        let ibuLi = document.createElement("p")
+        ibuLi.innerText = `IBU: ${beer.ibu}`
+        let description = document.createElement("p")
+        description.innerText = `Description ${beer.description}`
+        let beerImage = document.createElement("img")
+        beerImage.src = beer.image_url
+        let ul = document.createElement("ul")
+
+
+        NameLi.classList.add("random-pick-name")
+        taglineLi.classList.add("random-pick-tagline")
+        description.classList.add("random-pick-description")
+        ibuLi.classList.add("random-pick-value")
+        abvLi.classList.add("random-pick-val")
+        beerImage.classList.add("random-pick-img")
+
+        ul.append(abvLi, ibuLi)
+
+        randomBeerCard.append(NameLi, taglineLi, beerImage, description, ul)
+
+
+        randomDiv.append(randomBeerCard)
+
+    })
+
+}
 
 function showBeer(event){
     let selectedBeer = event.target.dataset.id
@@ -180,12 +242,14 @@ function showBeer(event){
 
         ul.append(abvP, ibuP)
 
-        let favDiv = document.createElement("div")
-        favDiv.setAttribute("class", "fav-div")
+        let favBeerDiv = document.createElement("div")
+        favBeerDiv.setAttribute("class", "fav-div")
+
 
 
 
         beerCard.append(nameP, taglineP, beerImage, description, ul, favDiv)
+
 
 
         showBeerDiv.append(beerCard)
@@ -196,41 +260,28 @@ function showBeer(event){
 
         // create favorite beers functions
         selectedBeer = parseInt(selectedBeer)
-
-
-        let beerArea1 = document.createElement("fav-button-area-1") 
-        beerArea1.setAttribute("class", "beer-area-1")
-        let beerArea2 = document.getElementById("fav-button-area-2")
-        beerArea2.setAttribute("class", "beer-area-2")
-
-        let beerArea = document.getElementById("fav-button-area")
-        // beerArea.innerHTML('')
-        let addingFav
+        let addFavBeerBtn = document.createElement("button")
+        let delFavBeerBtn = document.createElement("button")
+    
 
         if (userFavs.includes(selectedBeer)) { // if user already has beer, show text, and remove button
-            beerArea1.innerText = "This is one of your favorite beers"
-            // let removeFav = document.createElement("button")
-            // removeFav.id = "remove-fav-btn"
-            // removeFav.innerText = "Remove From Favorites"
-            // beerArea.append(removeFav)
-            // removeFav.addEventListener("click", destroyFav)
-            showBeerDiv.append(beerArea1)
+            favBeerDiv.innerText = "This is one of your favorite beers"
+            delFavBeerBtn.innerText = "Remove From Favorites"
+            delFavBeerBtn.innerHTML = '<button id="delFavBeerBtn">Remove From Favorites</button>'
+            showBeerDiv.append(favBeerDiv,delFavBeerBtn)
+            delFavBeerBtn.addEventListener("click", delFav)
             
             
         } else { // create add button functionality
-            console.log('am I being called?')
-            beerArea.innerHTML = '<button id="fav-btn">Add to favorites</button>'
-            // console.log('am i being read?')
-            // addingFav = document.createElement("button")
-            // addingFav.id = "fav-btn"
-            // addingFav.innerText = "Add to Favorites"
-            // beerArea.append(addingFav)
-            beerArea.addEventListener("click", addFav)
+            addFavBeerBtn.innerHTML = '<button id="addFavBeerBtn">Add to favorites</button>'
+            showBeerDiv.append(addFavBeerBtn)
+            addFavBeerBtn.addEventListener("click", addFav)
            
         }
     })
     
     
+
     function addFav(){
         accountContainer.style.display = "none";
         const configObject = {
@@ -247,30 +298,36 @@ function showBeer(event){
             .then(function(response){
                 return response.json();
             }).then(newUserBeer => {
-                document.getElementById("fav-btn").innerText = "Beer Favorited!"
-                document.getElementById("fav-button-area").dataset.ubid = newUserBeer.id
+                document.getElementById("addFavBeerBtn").innerText = "Beer Favorited!"
+                console.log(newUserBeer)
+                ubid = newUserBeer.id
+                console.log(ubid)
             })
-    }
+        }
+        
 
-    // function destroyFav(){
-    //     const configObject = {
-    //         method: "DELETE",
-    //         headers: {"Content-Type": "application/json",
-    //         "Accept": "application/json"},
-    //         body: JSON.stringify({user_id: localStorage.userId, 
-    //             beer_id: selectedBeer
-    //         })}
+    function delFav(){
+        document.getElementById("delFavBeerBtn").innerText = "Removed!"
+        const configObject = {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json",
+            "Accept": "application/json"},
+            body: JSON.stringify({user_id: localStorage.userId, 
+                beer_id: selectedBeer
+            })}
             
-    //         fav_url = `http://localhost:3000/user_beers/${ubID}`
+            fav_url = `http://localhost:3000/user_beers/${ubid}`
 
-    //         fetch(fav_url, configObject)
-    //         .then(function(response){
-    //             return response.json();
-    //         }).then(newUserBeer => {
-    //             document.getElementById("remove-fav-btn").innerText = "Removed!"
-    //         })
-    // }  
+            fetch(fav_url, configObject)
+            .then(function(response){
+                return response.json();
+            }).then(newUserBeer => {
+                
+            })
+        }  
+        
     } 
+    
 
 // show user
 const userShow = document.getElementById("favorites-button")
@@ -360,32 +417,6 @@ function showUser() {
     })   
 }
 
-
-
-function logIn() {
-    let userLogin = document.getElementById('user-login')
-    userLogin.addEventListener('submit', () => {
-        event.preventDefault()
-        let username = document.getElementById('return-user').value
-        fetch("http://localhost:3000/users", {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Origin': "*"
-            },
-            body: JSON.stringify({'username': username })
-        })
-        .then(r => r.json())
-        .then(input => {
-            if (input.errors) {
-              alert(input.errors.username)
-            } else {
-              localStorage.getItem('userId', input.id)
-        }
-        })
-    })
-}
-
 function createAccount() {
     favBeerContainer.style.display = "none";
     accountContainer.style.display = "block";
@@ -420,6 +451,7 @@ function createAccount() {
 }
 
 
+goBack.addEventListener("click", fetchBeers)
 browseBeers.addEventListener("click", fetchBeers)
   
 // search for beers
@@ -778,4 +810,5 @@ function editCommentFetch(event){
         editForm.style.display = "none"
 })
 }
+
 })
