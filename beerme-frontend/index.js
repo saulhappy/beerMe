@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let browseBeersContainer = document.getElementById("browse-beers-container")
     let showBeerContainer = document.getElementById("show-beer-container")
     let accountContainer = document.getElementById("account-container")
+    let favBeerContainer = document.getElementById("container-show-user")
    // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
 
        
@@ -56,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
+    favBeerContainer.style.display = "none"
     accountContainer.style.display = "none";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "block";
@@ -75,7 +77,10 @@ function fetchBeers(){
             let foodPairingUl = document.createElement("ul")
             let frontDiv = document.createElement("div")
             let backDiv = document.createElement("div")
+            let numDiv = document.createElement("div")
 
+            frontDiv.dataset.id = beer.id
+            backDiv.dataset.id = beer.id
             backDiv.classList.add("card-back")
             frontDiv.classList.add("card-front")
             card.classList.add("beer-card")
@@ -86,6 +91,7 @@ function fetchBeers(){
             ibuP.classList.add("beer-card-details")
             foodPairingUl.classList.add("beer-card-details")
 
+            numDiv.dataset.id = beer.id
             ebcP.dataset.id = beer.id
             nameP.innerText = beer.name
             nameP.dataset.id = beer.id
@@ -106,13 +112,15 @@ function fetchBeers(){
             abvP.dataset.id = beer.id
             ibuP.dataset.id = beer.id
             foodPairingUl.dataset.id = beer.id
+            numDiv.id = "num-div"
+            numDiv.append(abvP, ibuP, ebcP)
 
 
 
             card.dataset.id = beer.id
 
             frontDiv.append(nameP, image)
-            backDiv.append(abvP, ibuP, ebcP, foodPairingUl)
+            backDiv.append(foodPairingUl, numDiv)
             card.append(frontDiv, backDiv)
 
 
@@ -133,6 +141,7 @@ function showBeer(event){
     let beerDiv = document.getElementById("single-beer")
     let commentButton = document.querySelector("button")
 
+    accountContainer.style.display = "none";
     browseBeersContainer.style.display = "none";
     beerDiv.innerHTML = ""
     showBeerContainer.style.display = "block";
@@ -148,32 +157,35 @@ function showBeer(event){
 
         beerCard.id = selectedBeer
       
-        let NameLi = document.createElement("p")
+        let nameP = document.createElement("h1")
 
-        NameLi.innerText = beer.name
-        let taglineLi = document.createElement("li")
-        taglineLi.innerText = beer.tagline
-        let abvLi = document.createElement("li")
-        abvLi.innerText = beer.abv
+        nameP.innerText = beer.name
+        let taglineP = document.createElement("p")
+        taglineP.classList.add("tagline-show")
+        taglineP.innerText = beer.tagline
+        let abvP = document.createElement("p")
+        abvP.innerText = `ABV: ${beer.abv}`
 
       
-        let ibuLi = document.createElement("li")
-        ibuLi.innerText = beer.ibu
-        let description = document.createElement("li")
+        let ibuP = document.createElement("p")
+        ibuP.innerText = `IBU: ${beer.ibu}`
+        let description = document.createElement("p")
         description.innerText = beer.description
         let beerImage = document.createElement("img")
         beerImage.src = beer.image_url
         let ul = document.createElement("ul")
+        ul.classList.add("beer-details")
+        nameP.classList.add("beer-name-show")
+        description.classList.add("beer-desc-show")
 
-
-        ul.append(abvLi, ibuLi)
+        ul.append(abvP, ibuP)
 
         let favDiv = document.createElement("div")
         favDiv.setAttribute("class", "fav-div")
 
 
 
-        beerCard.append(NameLi, taglineLi, beerImage, description, ul, favDiv)
+        beerCard.append(nameP, taglineP, beerImage, description, ul, favDiv)
 
 
         showBeerDiv.append(beerCard)
@@ -220,6 +232,7 @@ function showBeer(event){
     
     
     function addFav(){
+        accountContainer.style.display = "none";
         const configObject = {
             method: "POST",
             headers: {"Content-Type": "application/json",
@@ -260,20 +273,21 @@ function showBeer(event){
     } 
 
 // show user
-const userShow = document.getElementById("user-show-link")
+const userShow = document.getElementById("favorites-button")
 userShow.addEventListener("click", showUser)
 
 function showUser() {
+    favBeerContainer.style.display = "block";
     browseBeersContainer.style.display = "none";
     let showUserContainer = document.getElementById("container-show-user")
     showUserContainer.setAttribute("class", "show-user-container")
 
-    let showBeerDiv = document.getElementById("single-beer")
+    let showBeerDiv = document.getElementById("fav-beers")
     showBeerDiv.setAttribute("class", "fav-beer-div")
     let showBeerDivTitle = document.createElement("h3")
-    showBeerDivTitle.setAttribute("class", "fav-beer-div-title")
-    showBeerDivTitle.innerText = "Your Favorite Beers"
-    showBeerDiv.append(showBeerDivTitle)
+    // showBeerDivTitle.setAttribute("class", "fav-beer-div-title")
+    // showBeerDivTitle.innerText = "Your Favorite Beers"
+    // showBeerDiv.append(showBeerDivTitle)
 
     let commentDiv = document.createElement("div")
     let commentDivTitle = document.createElement("h3")
@@ -295,27 +309,30 @@ function showUser() {
             .then(beer => {
 
                 let beerCard = document.createElement("card")
-                beerCard.setAttribute("class", "beer-card")
+                beerCard.setAttribute("class", "fav-beer-card")
 
-                let NameLi = document.createElement("p")
+                let NameP = document.createElement("p")
+                NameP.id = "beer-name"
 
-                NameLi.innerText = beer.name
-                let taglineLi = document.createElement("li")
-                taglineLi.innerText = beer.tagline
-                let abvLi = document.createElement("li")
-                abvLi.innerText = beer.abv
+                NameP.innerText = beer.name
+                let taglineP = document.createElement("p")
+                taglineP.id = "tag-line"
+                taglineP.innerText = beer.tagline
+                let abvP = document.createElement("p")
+                abvP.innerText = `ABV: ${beer.abv}`
 
-                let ibuLi = document.createElement("li")
-                ibuLi.innerText = beer.ibu
-                let description = document.createElement("li")
+                let ibuP = document.createElement("p")
+                ibuP.innerText = `IBU: ${beer.abv}`
+                let description = document.createElement("p")
                 description.innerText = beer.description
                 let beerImage = document.createElement("img")
+                beerImage.id = "fav-beer-img"
                 beerImage.src = beer.image_url
                 let ul = document.createElement("ul")
 
-                ul.append(abvLi, ibuLi)
+                ul.append(abvP, ibuP)
 
-                beerCard.append(NameLi, taglineLi, beerImage, description, ul)
+                beerCard.append(NameP, taglineP, ul, beerImage, description)
 
                 showBeerDiv.append(beerCard)
                 showUserContainer.append(showBeerDiv)
@@ -370,6 +387,7 @@ function logIn() {
 }
 
 function createAccount() {
+    favBeerContainer.style.display = "none";
     accountContainer.style.display = "block";
     showBeerContainer.style.display = "none";
     browseBeersContainer.style.display = "none";
@@ -516,6 +534,8 @@ function showComments(selectedBeer){
                 let saveButton = document.createElement("button")
                 let editBox = document.createElement("textarea")
 
+                commentP.classList.add("comment-text")
+                commentUser.classList.add("comment-user")
                 editForm.append(editBox, saveButton)
                 editForm.style.display = "none"
 
@@ -563,6 +583,7 @@ function showComments(selectedBeer){
 
         commentBox.id = "comment-form-box"
         commentButton.innerText = "Submit"
+        commentButton.classList.add("submit-button")
         commentForm.append(commentBox, commentButton)
         commentBoxDiv.append(commentForm)
         commentForm.addEventListener("submit", createComment)
