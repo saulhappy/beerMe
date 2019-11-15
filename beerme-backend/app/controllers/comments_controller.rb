@@ -36,6 +36,9 @@ class CommentsController < ApplicationController
             :only => [:id, :comment_text, :beer_id, :user_id],
             :include => {:user => {
                 :only => [:username]
+            }},
+            :include => {:beer => {
+                :only => [:name]
             }}
         }
     end

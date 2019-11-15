@@ -236,18 +236,36 @@ userShow.addEventListener("click", showUser)
 function showUser() {
     browseBeersContainer.style.display = "none";
     let showUserContainer = document.getElementById("container-show-user")
+    showUserContainer.setAttribute("class", "show-user-container")
+
+    let showBeerDiv = document.getElementById("single-beer")
+    showBeerDiv.setAttribute("class", "fav-beer-div")
+    let showBeerDivTitle = document.createElement("h3")
+    showBeerDivTitle.setAttribute("class", "fav-beer-div-title")
+    showBeerDivTitle.innerText = "Your Favorite Beers"
+    showBeerDiv.append(showBeerDivTitle)
+
+    let commentDiv = document.createElement("div")
+    let commentDivTitle = document.createElement("h3")
+    commentDivTitle.setAttribute("class", "user-comments-div-title")
+    commentDivTitle.innerText = "Your Comments"
+    commentDiv.setAttribute("class", "user-comments-div")
+    commentDiv.append(commentDivTitle)
+
+
+    let commentCard = document.createElement("card")
 
     fetch(`http://localhost:3000/user_beers`)
     .then(r => r.json())
     .then(beer => {
             for(let i = 0; i < beer.length; i++){
-            
+
             fetch(`http://localhost:3000/beers/${beer[i].beer_id}`)
             .then(r => r.json())
             .then(beer => {
-                let showBeerDiv = document.getElementById("single-beer")
+
                 let beerCard = document.createElement("card")
-                beerCard.setAttribute("class", "fav-beer-card")
+                beerCard.setAttribute("class", "beer-card")
 
                 let NameLi = document.createElement("p")
 
@@ -269,14 +287,30 @@ function showUser() {
 
                 beerCard.append(NameLi, taglineLi, beerImage, description, ul)
 
-                showUserContainer.append(beerCard)
+                showBeerDiv.append(beerCard)
+                showUserContainer.append(showBeerDiv)
 
                 showUserContainer.style.display = 'block'
-
-
             })
-        }     
-    })  
+        }    
+    }) 
+    // comments sections
+    fetch(`http://localhost:3000/comments`)
+    .then(r => r.json())
+    .then(comment => {
+        for(let i = 0; i < comment.length; i++){
+
+            commentCard.setAttribute("class", "show-user-comment-card")
+            
+            let textComment = document.createElement("p")
+            textComment.setAttribute("class", "user-show-comment")
+            textComment.innerText = comment[i].beer.name + ": " + comment[i].comment_text
+
+            commentCard.append(textComment)
+        }            
+        commentDiv.append(commentCard)
+        showUserContainer.append(commentDiv) 
+    })   
 }
 
 
@@ -432,11 +466,8 @@ function showComments(selectedBeer){
     let commentBox = document.createElement("textarea")
     let commentButton = document.createElement("button")
   
-    
-   
     commentsDiv.innerHTML = ""
-    
-    
+      
     fetch(`http://localhost:3000/comments`)
     .then(r => r.json())
     .then(comments => {
