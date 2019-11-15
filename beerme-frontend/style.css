@@ -108,14 +108,43 @@ nav ul li a:hover {
 	
 }
 
+.submit-button {
+
+}
+
+#comment-box {
+
+    display: grid;
+    padding-left: 300px;
+}
+
+#comment-form-box {
+	width: 300px;
+	height: 100px;
+	padding-right: 200px;
+	border: solid black;
+}
+
+.comment-text {
+	padding-top: 20px;
+	text-align: left;
+	font-size: 25px;
+	padding-left: 20px;
+}
+
+.comment-user{
+	text-align: right;
+	padding-top: 30px;
+	padding-right: 10px;
+	color: rgba(255, 0, 0, 0.699)
+	
+}
+
 .comment-card {
-	background-color: rgba(75, 75, 75, 0.8);
-    border: solid 2px;
-    font-family: Arial;
-	font-size: medium;
-	width: 400px;
-	height: 200px;
-	padding-tip: 100px;
+	background-color: rgba(75, 75, 75, 0.164);
+	height: 100px;
+	width: 300px;
+    font-family: 'Questrial', sans-serif;
 }
 
 #account-container {
@@ -124,12 +153,17 @@ nav ul li a:hover {
 	
 }
 
-
+#container-show-user {
+	padding-top: 200px;
+}
 
 #browse-beers-container {
 	padding-top: 150px;
 }
 
+#fav-beer-title {
+	text-align: center;
+}
 
 #show-beer-container {
 	padding-top: 150px;
@@ -142,7 +176,27 @@ nav ul li a:hover {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 40px;
 	padding: 60px 0;
+	margin-left: 100px;
+	margin-right: 100px;
 	
+}
+
+#fav-beer-img {
+	height: 200px;
+	background: transparent no-repeat center;
+	background-size: cover;
+
+}
+
+#fav-beers {
+
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-gap: 40px;
+	padding: 60px 0;
+	padding-top: 75px;
+	margin-left: 50px;
+	margin-right: 50px;
 	
 }
 
@@ -159,22 +213,44 @@ text-align: center;
 }
 
 #comments-div {
-	padding-top: 100px;
-	padding-left: 100px;
+	padding-top: 50px;
 	display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    grid-gap: 4px;
-	width: 200px;
-	text-align: center;
-
+	grid-template-rows: 1fr 1fr 1fr 1fr;
+	grid-gap: 20px;
+	padding: 60px 0;
+	padding-left: 300px;
+	padding-right: 500px;
 }
 
-.comment-form {
-	display: grid;
+
+.beer-details {
 	text-align: center;
-	padding-left: 400px;
-	width: 300px;
-	height: 100px;
+	display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 20px;
+	padding: 10px 0;
+	margin-left: 650px;
+	margin-right: 50px;
+	font-family: 'Questrial', sans-serif;
+	color: rgba(255, 0, 0, 0.699)
+}
+
+.beer-name-show {
+	text-align: center;
+	font-family: 'Questrial', sans-serif;
+	padding-bottom: 30px;
+}
+
+.beer-desc-show {
+	padding-left: 200px;
+	text-align: center;
+	padding-bottom: 40px;
+}
+
+.tagline-show {
+	text-align: center;
+	padding-bottom: 40px;
+	
 }
 
 #single-beer {
@@ -213,9 +289,7 @@ card {
 
     background-color: rgba(82, 82, 82, 0.3);
     text-align: left;
-    font-family: Arial;
-    font-size: medium;
-    
+ 
 }
 
 card img {
@@ -229,17 +303,78 @@ card img {
 }
 
 .beer-list-beerName {
-	font-family: 'Varela Round', sans-serif;
+	font-family: 'Questrial', sans-serif;
+	
 	font-size: 20px;
 	text-align: center;
 	font-weight: bold;
 	
 }
 
-.beer-card-details {
+#tag-line {
+	text-align: center;
+	color: rgba(255, 0, 0, 0.699)
+}
+
+#beer-name {
+	font-family: 'Questrial', sans-serif;
+	
+	font-size: 20px;
+	text-align: center;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+.beer-card {
 	font-family: 'Questrial', sans-serif;
 	padding-top: 20px;
 	float: bottom;
+	bottom: 0;
+	left: 0;
+	text-align: center;
+}
+
+.fav-beer-card {
+	font-family: 'Questrial', sans-serif;
+	padding-top: 20px;
+	float: bottom;
+	bottom: 0;
+	left: 0;
+	text-align: center;
+}
+
+.fav-beer-card ul {
+	text-align: center;
+	display: inline;
+	padding-bottom: 20px;
+	padding-top: 20px;
+
+	display: grid;
+	
+}
+
+#num-div {
+	padding-top: 20px;
+	float: bottom;
+}
+
+#num-div p {
+	padding-top: 50px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.card-back {
+	padding-top: 30px;
+}
+
+.beer-card-details {
+	font-family: 'Questrial', sans-serif;
+
+	grid-row: auto;
+	padding-top: 20px;
+	display: inline;
+
 	bottom: 0;
 	left: 0;
 }
@@ -259,6 +394,5 @@ card img {
   .slider:hover {
     opacity: 1; /* Fully shown on mouse-over */
   }
-
 
 
