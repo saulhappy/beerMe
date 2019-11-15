@@ -109,10 +109,13 @@ nav ul li a:hover {
 }
 
 .comment-card {
-	background-color: rgba(75, 75, 75, 0.164);
-    text-align: left;
+	background-color: rgba(75, 75, 75, 0.8);
+    border: solid 2px;
     font-family: Arial;
-    font-size: medium;
+	font-size: medium;
+	width: 400px;
+	height: 200px;
+	padding-tip: 100px;
 }
 
 #account-container {
@@ -157,6 +160,21 @@ text-align: center;
 
 #comments-div {
 	padding-top: 100px;
+	padding-left: 100px;
+	display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-gap: 4px;
+	width: 200px;
+	text-align: center;
+
+}
+
+.comment-form {
+	display: grid;
+	text-align: center;
+	padding-left: 400px;
+	width: 300px;
+	height: 100px;
 }
 
 #single-beer {
@@ -243,6 +261,4 @@ card img {
   }
 
 
-.comment-card {
-    background-color: white;
-}
+
