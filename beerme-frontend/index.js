@@ -362,15 +362,15 @@ function showUser() {
     // showBeerDivTitle.innerText = "Your Favorite Beers"
     // showBeerDiv.append(showBeerDivTitle)
 
-    let commentDiv = document.createElement("div")
-    let commentDivTitle = document.createElement("h3")
-    commentDivTitle.setAttribute("class", "user-comments-div-title")
-    commentDivTitle.innerText = "Your Comments"
-    commentDiv.setAttribute("class", "user-comments-div")
-    commentDiv.append(commentDivTitle)
+    // let commentDiv = document.createElement("div")
+    // let commentDivTitle = document.createElement("h3")
+    // commentDivTitle.setAttribute("class", "user-comments-div-title")
+    // commentDivTitle.innerText = "Your Comments"
+    // commentDiv.setAttribute("class", "user-comments-div")
+    // commentDiv.append(commentDivTitle)
 
 
-    let commentCard = document.createElement("card")
+    // let commentCard = document.createElement("card")
 
     fetch(`http://localhost:3000/user_beers`)
     .then(r => r.json())
@@ -415,22 +415,22 @@ function showUser() {
         }    
     }) 
     // comments sections
-    fetch(`http://localhost:3000/comments`)
-    .then(r => r.json())
-    .then(comment => {
-        for(let i = 0; i < comment.length; i++){
+    // fetch(`http://localhost:3000/comments`)
+    // .then(r => r.json())
+    // .then(comment => {
+    //     for(let i = 0; i < comment.length; i++){
 
-            commentCard.setAttribute("class", "show-user-comment-card")
+    //         commentCard.setAttribute("class", "show-user-comment-card")
             
-            let textComment = document.createElement("p")
-            textComment.setAttribute("class", "user-show-comment")
-            textComment.innerText = comment[i].beer.name + ": " + comment[i].comment_text
+    //         let textComment = document.createElement("p")
+    //         textComment.setAttribute("class", "user-show-comment")
+    //         textComment.innerText = comment[i].beer.name + ": " + comment[i].comment_text
 
-            commentCard.append(textComment)
-        }            
-        commentDiv.append(commentCard)
-        showUserContainer.append(commentDiv) 
-    })   
+    //         commentCard.append(textComment)
+    //     }            
+    //     commentDiv.append(commentCard)
+    //     showUserContainer.append(commentDiv) 
+    // })   
 }
 
 function createAccount() {
@@ -638,31 +638,7 @@ function showComments(selectedBeer){
     })
 
 
-// ebc slider filter
-let ebcSlider = document.getElementById("ebc-slider");
-let ebcOutput = document.getElementById("ebc-content");
-ebcOutput.innerHTML = ebcSlider.value; 
 
-
-ebcSlider.oninput = function() {
-    ebcOutput.innerHTML = this.value;
-    ebcSliderInput = parseInt(this.value)
-    const ebcVal = document.getElementsByClassName("ebc-value")
-    
-    Array.from(ebcVal).forEach(function(ebc){
-        const beerebc = parseInt(ebc.innerText.match(numberPattern)[0])        
-
-})
-
-
-        if (beerebc > ebcSliderInput){
-            ebc.parentElement.style.display = 'block';
-        } else {
-            ebc.parentElement.style.display = 'none';
-        }
-        
-
-}
 
 // reset forms
 document.addEventListener("click", function(){
@@ -677,7 +653,7 @@ function createComment(event){
     
  
     let beerId = document.getElementById("hidden_beer_id").value
-    let userId = document.getElementById("hidden_user_id").value
+    let userId = localStorage.userId
 
     
     let textarea = document.getElementById("comment-form-box")
@@ -732,7 +708,8 @@ function createComment(event){
         
         commentUser.innerText = commentBy
         commentP.innerText = comment.comment_text
-        commentP.setAttribute("class", "commentP")
+        commentP.setAttribute("class", "comment-text")
+        commentUser.setAttribute("class", "comment-user")
         commentCard.append(commentP, commentUser)
         commentCard.dataset.commentId = comment.user_id
         commentCard.dataset.beerId = comment.beer_id
@@ -784,13 +761,13 @@ function editComment(event){
     let editBox = editForm.querySelector("textarea")
     let saveButton = editForm.querySelector("button")
    
-    
+    debugger
 
     editBox.value = oldText.innerText
 
     editForm.style.display = "block"
     
-    // saveButton.addEventListener("click", editCommentFetch)
+    saveButton.addEventListener("click", editCommentFetch)
 }
 
 
@@ -800,6 +777,7 @@ function editComment(event){
 function editCommentFetch(event){
     event.preventDefault()
     let commentToEdit = event.target.dataset.id
+
     commentToEdit = parseInt(commentToEdit)
     
     let commentForm = event.target.parentElement
@@ -807,7 +785,7 @@ function editCommentFetch(event){
     
     let commentCard = commentForm.parentElement
   
-    let commentP = commentCard.getElementsByClassName("commentP")
+    let commentP = commentCard.getElementsByClassName("comment-text")
     commentP = commentP[0]
     commentP.innerText = newText
    
