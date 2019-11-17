@@ -9,11 +9,16 @@ document.addEventListener("DOMContentLoaded", function(){
     let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
     let randomBeerContainer = document.getElementById("random-beer-container")
+
+    let mainLogo = document.getElementById("beer-cap-logo")
+    mainLogo.addEventListener("click",fetchBeers)
+
+
     let favBeerContainer = document.getElementById("container-show-user")
 
    // add a let here for the usershow container and set the dislay to none in places where it's not supposed to be shown.
 
-   let ubid
+
        
     createAccount()
 
@@ -29,8 +34,7 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     })
 
-  
- 
+
 
 // function getBeers(){
 //     fetch("https://api.punkapi.com/v2/beers?page=4&per_page=60")
