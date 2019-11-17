@@ -8,8 +8,11 @@ document.addEventListener("DOMContentLoaded", function(){
     let goBack = document.getElementById("browse-beers-button")
     let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
+    let randomBeerContainer = document.getElementById("random-beer-container")
+
     let mainLogo = document.getElementById("beer-cap-logo")
     mainLogo.addEventListener("click",fetchBeers)
+
 
     let favBeerContainer = document.getElementById("container-show-user")
 
@@ -30,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function(){
             userFavs.push(favs[i].beer_id)
         }
     })
+
 
 
 // function getBeers(){
@@ -63,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 function fetchBeers(){
+    randomBeerContainer.style.display = "none"
     favBeerContainer.style.display = "none"
     accountContainer.style.display = "none";
     showBeerContainer.style.display = "none";
@@ -143,14 +148,25 @@ function fetchBeers(){
 beerMeBtn.addEventListener("click", showRandomBeer)
 
 function showRandomBeer() {
+
+    randomBeerContainer.style.display = "block"
+    browseBeersContainer.style.display = "none"
+    showBeerContainer.style.display = "none"
+    accountContainer.style.display = "none"
+    favBeerContainer.style.display = "none"
+
+    
+
+
+
     let randomDiv = document.getElementById("single-random-beer")
     let randomBeer = Math.floor(Math.random() * 100)
     let commentsDiv = document.getElementById("comments-div")
     
-    browseBeersContainer.style.display = "none";
+
     randomDiv.innerHTML = ""
     commentsDiv.innerHTML = ""
-    showBeerContainer.style.display = "block";
+    
 
     fetch(`http://localhost:3000/beers/${randomBeer}`)
     .then(r => r.json())
@@ -158,6 +174,7 @@ function showRandomBeer() {
 
         let randomDiv = document.getElementById("single-random-beer")
         let randomBeerCard = document.createElement("card")
+        
 
         randomBeerCard.id = randomBeer.id
       
@@ -190,8 +207,10 @@ function showRandomBeer() {
 
         randomBeerCard.append(NameLi, taglineLi, beerImage, description, ul)
 
+        randomBeerCard.classList.add("rand-beer-card")
 
         randomDiv.append(randomBeerCard)
+        randomBeerContainer.append(randomDiv)
 
     })
 
@@ -202,6 +221,7 @@ function showBeer(event){
     let beerDiv = document.getElementById("single-beer")
     let commentButton = document.querySelector("button")
 
+    randomBeerContainer.style.display = "none"
     accountContainer.style.display = "none";
     browseBeersContainer.style.display = "none";
     beerDiv.innerHTML = ""
@@ -247,7 +267,7 @@ function showBeer(event){
 
 
 
-        beerCard.append(nameP, taglineP, beerImage, description, ul, favDiv)
+        beerCard.append(nameP, taglineP, beerImage, description, ul, favBeerDiv)
 
 
 
@@ -333,6 +353,7 @@ const userShow = document.getElementById("favorites-button")
 userShow.addEventListener("click", showUser)
 
 function showUser() {
+    randomBeerContainer.style.display = "none"
     favBeerContainer.style.display = "block";
     browseBeersContainer.style.display = "none";
     let showUserContainer = document.getElementById("container-show-user")
@@ -345,15 +366,15 @@ function showUser() {
     // showBeerDivTitle.innerText = "Your Favorite Beers"
     // showBeerDiv.append(showBeerDivTitle)
 
-    let commentDiv = document.createElement("div")
-    let commentDivTitle = document.createElement("h3")
-    commentDivTitle.setAttribute("class", "user-comments-div-title")
-    commentDivTitle.innerText = "Your Comments"
-    commentDiv.setAttribute("class", "user-comments-div")
-    commentDiv.append(commentDivTitle)
+    // let commentDiv = document.createElement("div")
+    // let commentDivTitle = document.createElement("h3")
+    // commentDivTitle.setAttribute("class", "user-comments-div-title")
+    // commentDivTitle.innerText = "Your Comments"
+    // commentDiv.setAttribute("class", "user-comments-div")
+    // commentDiv.append(commentDivTitle)
 
 
-    let commentCard = document.createElement("card")
+    // let commentCard = document.createElement("card")
 
     fetch(`http://localhost:3000/user_beers`)
     .then(r => r.json())
@@ -398,22 +419,22 @@ function showUser() {
         }    
     }) 
     // comments sections
-    fetch(`http://localhost:3000/comments`)
-    .then(r => r.json())
-    .then(comment => {
-        for(let i = 0; i < comment.length; i++){
+    // fetch(`http://localhost:3000/comments`)
+    // .then(r => r.json())
+    // .then(comment => {
+    //     for(let i = 0; i < comment.length; i++){
 
-            commentCard.setAttribute("class", "show-user-comment-card")
+    //         commentCard.setAttribute("class", "show-user-comment-card")
             
-            let textComment = document.createElement("p")
-            textComment.setAttribute("class", "user-show-comment")
-            textComment.innerText = comment[i].beer.name + ": " + comment[i].comment_text
+    //         let textComment = document.createElement("p")
+    //         textComment.setAttribute("class", "user-show-comment")
+    //         textComment.innerText = comment[i].beer.name + ": " + comment[i].comment_text
 
-            commentCard.append(textComment)
-        }            
-        commentDiv.append(commentCard)
-        showUserContainer.append(commentDiv) 
-    })   
+    //         commentCard.append(textComment)
+    //     }            
+    //     commentDiv.append(commentCard)
+    //     showUserContainer.append(commentDiv) 
+    // })   
 }
 
 function createAccount() {
@@ -504,13 +525,13 @@ abvSlider.oninput = function() {
     
     Array.from(abvVal).forEach(function(abv){
         const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
-        
+       
         if (beerABV > abvSliderInput){
-            abv.parentElement.parentElement.style.display = 'block';
-           
+            abv.parentElement.parentElement.parentElement.style.display = 'block';
+           debugger
         } else {
-            abv.parentElement.parentElement.style.display = 'none';
-           
+            abv.parentElement.parentElement.parentElement.style.display = 'none';
+           debugger
         }
         
     })     
@@ -531,9 +552,9 @@ ibuSlider.oninput = function() {
         const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
 
         if (beerIBU > ibuSliderInput){
-            ibu.parentElement.parentElement.style.display = 'block';
+            ibu.parentElement.parentElement.parentElement.style.display = 'block';
         } else {
-            ibu.parentElement.parentElement.style.display = 'none';
+            ibu.parentElement.parentElement.parentElement.style.display = 'none';
         }
         
     })  
@@ -621,31 +642,7 @@ function showComments(selectedBeer){
     })
 
 
-// ebc slider filter
-let ebcSlider = document.getElementById("ebc-slider");
-let ebcOutput = document.getElementById("ebc-content");
-ebcOutput.innerHTML = ebcSlider.value; 
 
-
-ebcSlider.oninput = function() {
-    ebcOutput.innerHTML = this.value;
-    ebcSliderInput = parseInt(this.value)
-    const ebcVal = document.getElementsByClassName("ebc-value")
-    
-    Array.from(ebcVal).forEach(function(ebc){
-        const beerebc = parseInt(ebc.innerText.match(numberPattern)[0])        
-
-})
-
-
-        if (beerebc > ebcSliderInput){
-            ebc.parentElement.style.display = 'block';
-        } else {
-            ebc.parentElement.style.display = 'none';
-        }
-        
-
-}
 
 // reset forms
 document.addEventListener("click", function(){
@@ -660,7 +657,7 @@ function createComment(event){
     
  
     let beerId = document.getElementById("hidden_beer_id").value
-    let userId = document.getElementById("hidden_user_id").value
+    let userId = localStorage.userId
 
     
     let textarea = document.getElementById("comment-form-box")
@@ -715,7 +712,8 @@ function createComment(event){
         
         commentUser.innerText = commentBy
         commentP.innerText = comment.comment_text
-        commentP.setAttribute("class", "commentP")
+        commentP.setAttribute("class", "comment-text")
+        commentUser.setAttribute("class", "comment-user")
         commentCard.append(commentP, commentUser)
         commentCard.dataset.commentId = comment.user_id
         commentCard.dataset.beerId = comment.beer_id
@@ -767,13 +765,13 @@ function editComment(event){
     let editBox = editForm.querySelector("textarea")
     let saveButton = editForm.querySelector("button")
    
-    
+    debugger
 
     editBox.value = oldText.innerText
 
     editForm.style.display = "block"
     
-    // saveButton.addEventListener("click", editCommentFetch)
+    saveButton.addEventListener("click", editCommentFetch)
 }
 
 
@@ -783,6 +781,7 @@ function editComment(event){
 function editCommentFetch(event){
     event.preventDefault()
     let commentToEdit = event.target.dataset.id
+
     commentToEdit = parseInt(commentToEdit)
     
     let commentForm = event.target.parentElement
@@ -790,7 +789,7 @@ function editCommentFetch(event){
     
     let commentCard = commentForm.parentElement
   
-    let commentP = commentCard.getElementsByClassName("commentP")
+    let commentP = commentCard.getElementsByClassName("comment-text")
     commentP = commentP[0]
     commentP.innerText = newText
    
