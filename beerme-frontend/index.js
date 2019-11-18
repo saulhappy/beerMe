@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function(){
     let goBack = document.getElementById("browse-beers-button")
     let beerMeBtn = document.getElementById("beerme-button")
     let accountContainer = document.getElementById("account-container")
+    let randomBeerContainer = document.getElementById("random-beer-container")
     let mainLogo = document.getElementById("beer-cap-logo")
     mainLogo.addEventListener("click",fetchBeers)
 
@@ -147,10 +148,12 @@ function showRandomBeer() {
     let randomBeer = Math.floor(Math.random() * 100)
     let commentsDiv = document.getElementById("comments-div")
     
+
+    accountContainer.style.display = "none";
     browseBeersContainer.style.display = "none";
     randomDiv.innerHTML = ""
     commentsDiv.innerHTML = ""
-    showBeerContainer.style.display = "block";
+    showBeerContainer.style.display = "none";
 
     fetch(`http://localhost:3000/beers/${randomBeer}`)
     .then(r => r.json())
