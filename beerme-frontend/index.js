@@ -247,7 +247,7 @@ function showBeer(event){
 
 
 
-        beerCard.append(nameP, taglineP, beerImage, description, ul, favDiv)
+        beerCard.append(nameP, taglineP, beerImage, description, ul, favBeerDiv)
 
 
 
@@ -333,6 +333,7 @@ const userShow = document.getElementById("favorites-button")
 userShow.addEventListener("click", showUser)
 
 function showUser() {
+    showBeerContainer.style.display = "none";
     favBeerContainer.style.display = "block";
     browseBeersContainer.style.display = "none";
     let showUserContainer = document.getElementById("container-show-user")
@@ -506,10 +507,10 @@ abvSlider.oninput = function() {
         const beerABV = parseInt(abv.innerText.match(numberPattern)[0])
         
         if (beerABV > abvSliderInput){
-            abv.parentElement.parentElement.style.display = 'block';
+            abv.parentElement.parentElement.parentElement.style.display = 'block';
            
         } else {
-            abv.parentElement.parentElement.style.display = 'none';
+            abv.parentElement.parentElement.parentElement.style.display = 'none';
            
         }
         
@@ -531,9 +532,9 @@ ibuSlider.oninput = function() {
         const beerIBU = parseInt(ibu.innerText.match(numberPattern)[0])        
 
         if (beerIBU > ibuSliderInput){
-            ibu.parentElement.parentElement.style.display = 'block';
+            ibu.parentElement.parentElement.parentElement.style.display = 'block';
         } else {
-            ibu.parentElement.parentElement.style.display = 'none';
+            ibu.parentElement.parentElement.parentElement.style.display = 'none';
         }
         
     })  
